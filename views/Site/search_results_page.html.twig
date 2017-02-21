@@ -1,0 +1,23 @@
+{% extends 'Site/layout.html.twig' %}
+
+{% import 'Site/macro/sense.html.twig' as Sense %}
+
+{% block content %}
+    <div class="results">
+        <div class="row">
+            <div class="col-md-4 col-md-offset-4">
+                {% if senses %}
+                    <div class="list-group">
+                        {% for sense in senses %}
+                            <a href="{{ path('sense', {'name': sense.name, 'meaning': sense.meaning}) }}"
+                               class="list-group-item">{{ Sense.getFullName(sense) }}</a>
+                        {% endfor %}
+                        <h4 class="list-group-item">First ten results are shown</h4>
+                    </div>
+                {% else %}
+                    <h3>Nothing found</h3>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

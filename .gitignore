@@ -1,0 +1,8 @@
+.realsync
+deploy.sh
+rsync-exclude
+.idea
+.sass-cache
+vendor
+*.log
+app/config/database.json

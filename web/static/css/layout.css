@@ -1,0 +1,58 @@
+#toc {
+  margin-top: 20px; }
+
+#search-form .input-group {
+  min-width: 300px; }
+
+/* small screens */
+@media (max-width: 768px) {
+  /* override the Affix plugin so that the navigation isn't sticky */
+  nav.affix[data-toggle='toc'] {
+    position: static; }
+
+  /* display the second-level nav */
+  nav[data-toggle='toc'] .nav .nav {
+    display: block; }
+
+  #toc {
+    margin-top: 0; }
+
+  .navbar {
+    margin-bottom: 0; } }
+.lexeme-page > header {
+  text-transform: uppercase; }
+.lexeme-page .synset.summary {
+  border: solid 1px #cccccc;
+  margin-bottom: 1em;
+  border-radius: 6px;
+  overflow: hidden; }
+  .lexeme-page .synset.summary h1 {
+    font-size: 2em;
+    margin: 0.25em; }
+  .lexeme-page .synset.summary h2 {
+    font-size: 1.1em;
+    margin: 0.25em; }
+  .lexeme-page .synset.summary > header {
+    background: #eee;
+    border-bottom: solid 1px #cccccc;
+    padding: .5em; }
+  .lexeme-page .synset.summary > .senses {
+    font-size: 1.25em;
+    border-bottom: solid 1px #cccccc;
+    padding: .5em; }
+  .lexeme-page .synset.summary .relations .relation {
+    margin: .5em 0;
+    padding: .5em 1em;
+    background: #f7f7f7; }
+    .lexeme-page .synset.summary .relations .relation > header {
+      font-weight: bold;
+      padding: .5em 0; }
+    .lexeme-page .synset.summary .relations .relation .synset {
+      border-top: solid 1px #e6e6e6;
+      padding: .5em; }
+.lexeme-page .senses:hover {
+  text-shadow: 0 0 1px; }
+.lexeme-page .sense {
+  display: inline-block; }
+
+/*# sourceMappingURL=layout.css.map */

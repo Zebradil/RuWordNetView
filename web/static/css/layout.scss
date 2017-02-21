@@ -1,0 +1,100 @@
+$border: solid 1px hsl(0, 0%, 80%);
+$border-light: solid 1px hsl(0, 0%, 90%);
+
+.container {
+  //max-width : 730px;
+}
+
+#toc {
+  margin-top: 20px;
+}
+
+#search-form .input-group {
+  min-width: 300px;
+}
+
+/* small screens */
+@media (max-width: 768px) {
+  /* override the Affix plugin so that the navigation isn't sticky */
+  nav.affix[data-toggle='toc'] {
+    position: static;
+  }
+
+  /* display the second-level nav */
+  nav[data-toggle='toc'] .nav .nav {
+    display: block;
+  }
+
+  #toc {
+    margin-top: 0;
+  }
+
+  .navbar {
+    margin-bottom: 0;
+  }
+}
+
+.lexeme-page {
+  > header {
+    text-transform: uppercase;
+  }
+
+  .synset {
+    &.summary {
+      border: $border;
+      margin-bottom: 1em;
+      border-radius: 6px;
+      overflow: hidden;
+
+      h1 {
+        font-size: 2em;
+        margin: 0.25em
+      }
+
+      h2 {
+        font-size: 1.1em;
+        margin: 0.25em;
+      }
+
+      > header {
+        background: #eee;
+        border-bottom: $border;
+        padding: .5em;
+      }
+
+      > .senses {
+        font-size: 1.25em;
+        border-bottom: $border;
+        padding: .5em;
+      }
+
+      .relations {
+        .relation {
+          margin: .5em 0;
+          padding: .5em 1em;
+          background: #f7f7f7;
+
+          > header {
+            font-weight: bold;
+            padding: .5em 0;
+          }
+
+          .synset {
+            border-top: $border-light;
+            padding: .5em;
+          }
+        }
+      }
+    }
+  }
+
+  .senses {
+    &:hover {
+      text-shadow: 0 0 1px;
+    }
+  }
+
+  .sense {
+    display: inline-block;
+  }
+}

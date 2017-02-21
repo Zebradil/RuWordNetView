@@ -1,0 +1,16 @@
+navbar_brand: Тезаурус русского языка RuWordNet
+search: искать
+search_placeholder: введите слово для поиска
+synset: синсет
+
+POS-synonymy: частеречная синонимия
+hypernym: гипероним
+hyponym: гипоним
+domain: домен
+part holonym: целое
+part meronym: часть
+instance hyponym: экземпляр
+instance hypernym: класс
+entailment: следовательно
+cause: причина для
+antonym: антоним

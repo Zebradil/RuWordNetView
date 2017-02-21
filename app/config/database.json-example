@@ -1,0 +1,8 @@
+{
+  "driver": "pdo_pgsql",
+  "dbname": "ruwordnet",
+  "host": "127.0.0.1",
+  "port": 5432,
+  "user": "ruwordnet",
+  "password": "ruwordnet"
+}

@@ -1,0 +1,52 @@
+{% set senseListMaxLength = 50 %}
+
+<div class="synset summary">
+    {% set simpleSenseList = _self.simpleSenseList(synset.senses, currentSense) %}
+    <header>
+        <h1 data-toc-text="{{
+            simpleSenseList|length > senseListMaxLength
+                ? simpleSenseList[:senseListMaxLength] ~ '…'
+                : simpleSenseList
+        }}">
+            {{ 'synset'|trans|capitalize }}
+        </h1>
+    </header>
+    {{ _self.senseList(synset.senses, currentSense) }}
+    <div class="relations">
+        {% for groupName, relations in synset.getGroupedRelations() %}
+            <div class="relation">
+                <header><h2>{{ groupName|trans }}</h2></header>
+                <div class="synsets">
+                    {% for relation in relations %}
+                        <div class="synset lite">
+                            {{ _self.senseList(relation.getChildSynset().getSenses(), currentSense) }}
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% macro senseList(senses, currentSense) %}
+    <div class="senses">
+        {% for sense in senses %}
+            <div class="sense">
+                {% if sense.is(currentSense) %}
+                    <strong>{{ sense.name }}</strong>
+                {% else %}
+                    <a href="{{ path('search', { searchString: sense.name }) }}">{{ sense.name }}</a>
+                {%- endif %}
+                {{- loop.last ? '' : ',' }}
+            </div>
+        {% endfor %}
+    </div>
+{% endmacro %}
+
+{% macro simpleSenseList(senses, excludeSense) %}
+    {% for sense in senses %}
+        {% if not sense.is(excludeSense) or senses|length == 1 %}
+            {{ sense.name }}{{ loop.last ? '' : ',' }}
+        {% endif %}
+    {% endfor %}
+{% endmacro %}

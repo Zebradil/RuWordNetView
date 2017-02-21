@@ -1,0 +1,61 @@
+{% set synset = sense.getSynset() %}
+<div class="result-item row" data-synsetId="{{ synset.id }}">
+    <div class="col-xs-6 col-md-4">
+        {{ _self.printGroupedRelations(synset.getGroupedUpwardRelations()) }}
+    </div>
+    <div class="col-xs-6 col-md-4">
+        <div class="row">
+            <div class="col-md-4">
+                <span class="label label-default">
+                    {% if sense.synt_type == 'N' %}
+                        NOUN
+                    {% elseif sense.synt_type == 'V' %}
+                        VERB
+                    {% elseif sense.synt_type == 'Adj' %}
+                        ADJ
+                    {% else %}
+                        {{ sense.synt_type|upper }}
+                    {% endif %}
+                </span>
+            </div>
+            <div class="col-md-6">{{ sense.getFullName() }} ({{ sense.lemma }})</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                Definition
+            </div>
+            <div class="col-md-6">{{ synset.name }}. {{ synset.definition }}</div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                Synonyms
+            </div>
+            <div class="col-md-6">
+                {% for synonym in synset.getSenses() %}
+                    {{ synonym.getFullName() }}{{ loop.last ? '' : ', ' }}
+                {% endfor %}
+            </div>
+        </div>
+        {{ _self.printGroupedRelations(synset.getGroupedSymmetricRelations()) }}
+    </div>
+    <div class="col-xs-6 col-md-4">
+        {{ _self.printGroupedRelations(synset.getGroupedDownwardRelations()) }}
+    </div>
+</div>
+
+{% macro printGroupedRelations(groupedRelations) %}
+    {% for groupName, relations in groupedRelations %}
+        <div class="panel panel-primary">
+            <div class="panel-heading">{{ groupName }}</div>
+            <div class="panel-body list-group">
+                {% for relation in relations %}
+                    {% set sense = relation.getChildSynset().getFirstSense() %}
+                    <a href="{{ path('sense', {'name': sense.name, 'meaning': sense.meaning}) }}"
+                       class="list-group-item">
+                        {{ sense.getFullName() }}
+                    </a>
+                {% endfor %}
+            </div>
+        </div>
+    {% endfor %}
+{% endmacro %}

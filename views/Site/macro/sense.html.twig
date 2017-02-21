@@ -1,0 +1,5 @@
+{% macro getFullName(sense) %}
+{% spaceless %}
+{{ sense.name }} {{ sense.meaning ?: '' }}
+{% endspaceless %}
+{% endmacro %}
