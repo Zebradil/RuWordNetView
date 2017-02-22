@@ -3,6 +3,7 @@ Web interface for RuWordNet thesauri database. http://ruwordnet.ru
 
 See also: http://www.labinform.ru/pub/ruwordnet/index.htm
 
+General information
 ------
 The RuWordNet thesaurus is a thesaurus of the Russian language created in the format of well-known English thesaurus WordNet (https://wordnet.princeton.edu/). It was constructed using semi-automatic transformation of other Russian thesaurus for natural language processing RuThes (http://www.labinform.ru/pub/ruthes/).
 
