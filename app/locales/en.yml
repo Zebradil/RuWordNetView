@@ -3,3 +3,6 @@ search: search
 search_placeholder: specify word
 synset: synset
 POS-synonymy: POS-synonymy
+
+derived_from: derived from
+composed_of: composed of

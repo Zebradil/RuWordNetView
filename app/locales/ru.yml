@@ -2,6 +2,7 @@ navbar_brand: Тезаурус русского языка RuWordNet
 search: искать
 search_placeholder: введите слово для поиска
 synset: синсет
+sense: текстовый вход
 
 POS-synonymy: частеречная синонимия
 hypernym: гипероним
@@ -14,3 +15,5 @@ instance hypernym: класс
 entailment: следовательно
 cause: причина для
 antonym: антоним
+derived_from: образовано из
+composed_of: составлено из

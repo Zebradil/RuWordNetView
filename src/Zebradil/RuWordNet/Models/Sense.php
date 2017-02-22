@@ -5,7 +5,6 @@ namespace Zebradil\RuWordNet\Models;
 use Doctrine\DBAL\Types\Type;
 use Zebradil\RuWordNet\Views\SenseTemplateTrait;
 use Zebradil\SilexDoctrineDbalModelRepository\AbstractModel;
-use Zebradil\SilexDoctrineDbalModelRepository\ModelInterface;
 
 /**
  * Class Sense.
@@ -30,8 +29,22 @@ class Sense extends AbstractModel
         'meaning' => ['type' => Type::SMALLINT],
     ];
 
-    public function getSynset():Synset
+    private $_relations;
+
+    public function getSynset(): Synset
     {
         return $this->_repositoryFactory->getFor(Synset::class)->find(['id' => $this->synset_id]);
+    }
+
+    /**
+     * @return SenseRelation[]
+     */
+    public function getRelations(): array
+    {
+        if (null === $this->_relations) {
+            $this->_relations = $this->_repositoryFactory->getFor(SenseRelation::class)->findAllForSense($this);
+        }
+
+        return $this->_relations;
     }
 }

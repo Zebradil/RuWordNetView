@@ -5,6 +5,7 @@
         {% if senses is not empty %}
             <header><h1>{{ searchString }}</h1></header>
             {% for sense in senses %}
+                {% include 'Site/parts/sense_info_new.html.twig' with {'sense': sense} only %}
                 {% set synsetData = {
                 'synset': sense.getSynset(),
                 'currentSense': sense

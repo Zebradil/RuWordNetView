@@ -1,5 +1,14 @@
-{% macro getFullName(sense) %}
-{% spaceless %}
-{{ sense.name }} {{ sense.meaning ?: '' }}
-{% endspaceless %}
+{% macro senseList(senses, currentSense) %}
+    <div class="senses">
+        {% for sense in senses %}
+            <div class="sense">
+                {% if sense.is(currentSense) %}
+                    <strong>{{ sense.name }}</strong>
+                {% else %}
+                    <a href="{{ path('search', { searchString: sense.name }) }}">{{ sense.name }}</a>
+                {%- endif %}
+                {{- loop.last ? '' : ',' }}
+            </div>
+        {% endfor %}
+    </div>
 {% endmacro %}
