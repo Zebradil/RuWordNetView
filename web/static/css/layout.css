@@ -55,4 +55,9 @@
 .lexeme-page .sense {
   display: inline-block; }
 
+footer {
+  padding-top: 1.5rem;
+  color: #777;
+  border-top: .05rem solid #e5e5e5; }
+
 /*# sourceMappingURL=layout.css.map */
