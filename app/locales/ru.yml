@@ -15,5 +15,5 @@ instance hypernym: класс
 entailment: следовательно
 cause: причина для
 antonym: антоним
-derived_from: образовано из
+derived_from: однокоренные слова
 composed_of: составлено из
