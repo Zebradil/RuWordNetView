@@ -110,6 +110,20 @@ $app->register(new TwigServiceProvider(), [
     'twig.strict_variables' => false,
 ]);
 
+$app->extend('twig', function($twig, $app) {
+    $tr = Transliterator::create('Cyrillic-Latin');
+    $twig->addFilter(
+        'translit',
+        new \Twig_Filter_Function(
+            function ($string) use ($tr) {
+                return $tr->transliterate($string);
+            }
+        )
+    );
+
+    return $twig;
+});
+
 include 'translation.php';
 
 # URL generator

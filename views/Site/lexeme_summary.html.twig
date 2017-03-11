@@ -1,19 +1,59 @@
 {% extends "Site/layout.html.twig" %}
 
+{% import 'Site/macro/sense.html.twig' as _sense %}
+
 {% block content %}
+
     <div class="lexeme-page">
         {% if senses is not empty %}
-            <header><h1>{{ searchString }}</h1></header>
-            {% for sense in senses %}
-                {% include 'Site/parts/sense_info_new.html.twig' with {'sense': sense} only %}
-                {% set synsetData = {
-                'synset': sense.getSynset(),
-                'currentSense': sense
-                } %}
-                {% include 'Site/parts/synset_summary.html.twig' with synsetData only %}
-            {% endfor %}
+            <div class="lexeme">
+                <h1 class="lexeme-title" data-jbootoc-skip>{{ searchString|upper }}</h1>
+                <div class="senses">
+                    {% for sense in senses %}
+                        <div class="sense">
+                            <h2 class="sense-title" data-jbootoc-id="{{ sense.name|translit }}">{{ sense.name|capitalize }} {{ sense.meaning ? sense.meaning }}</h2>
+                            {% set relations = sense.getGroupedRelatedSenses() %}
+                            {% if relations %}
+                                <div class="sense-relations relations">
+                                    {% for groupName, relatedSenses in relations %}
+                                        <div class="relation">
+                                            <h3 class="relation-title" data-jbootoc-id="{{ groupName }}">{{ groupName|trans }}</h3>
+                                            <div class="relations-subjects">
+                                                {{ _sense.senseList(relatedSenses, sense) }}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            {% endif %}
+
+                            {% set synset = sense.getSynset() %}
+                            <div class="synset">
+                                <h3 class="synset-title" data-jbootoc-id="synset">{{ 'synset'|trans|capitalize }}</h3>
+                                <div class="synonyms">
+                                    {{ _sense.senseList(synset.senses, sense) }}
+                                </div>
+                                <div class="synset-relations relations">
+                                    {% for groupName, relations in synset.getGroupedRelations() %}
+                                        <div class="relation">
+                                            <h4 class="relations-title" data-jbootoc-id="{{ groupName }}">{{ groupName|trans }}</h4>
+                                            <div class="relations-subjects">
+                                                {% for relation in relations %}
+                                                    <div class="synset">
+                                                        {{ _sense.senseList(relation.getChildSynset().getSenses(), sense) }}
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                </div>
+                            </div>
+
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
         {% else %}
-            <h4>По запросу «{{ searchString }}» ничего не найдено</h4>
+            <h4 data-jbootoc-skip>По запросу «{{ searchString }}» ничего не найдено</h4>
         {% endif %}
     </div>
 {% endblock %}

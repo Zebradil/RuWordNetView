@@ -7,7 +7,7 @@
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
         <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v0.3.0/dist/bootstrap-toc.min.css">
         <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-theme.css">
-        <link rel="stylesheet" href="/static/css/layout.css?1">
+        <link rel="stylesheet" href="/static/css/layout.min.css?1">
     {% endblock %}
 </head>
 <body data-spy="scroll" data-target="#toc">
@@ -61,7 +61,7 @@
 
     <div class="row">
         <div class="col-sm-3 col-md-2">
-            <nav id="toc" data-spy="affix" data-toggle="toc"></nav>
+            <nav id="toc" data-spy="affix" class="col-sm-3 col-md-2"></nav>
         </div>
         <div class="col-sm-9 col-md-10">
             {% block content %}{% endblock %}
@@ -81,7 +81,19 @@
 {% block javascripts %}
     <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="https://cdn.rawgit.com/afeld/bootstrap-toc/v0.3.0/dist/bootstrap-toc.min.js"></script>
+    <script src="/static/js/jbootoc.js"></script>
+    <script>
+        $(function () {
+            "use strict";
+            var navSelector = "#toc";
+            $(navSelector).jbootoc({
+                depth: 3,
+            });
+            $("body").scrollspy({
+                target: navSelector
+            });
+        });
+    </script>
 {% endblock %}
 </body>
 </html>
