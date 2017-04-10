@@ -3,6 +3,7 @@
 namespace Zebradil\RuWordNet\Repositories;
 
 use Zebradil\RuWordNet\Models\Sense;
+use Zebradil\RuWordNet\Models\SenseRelation;
 use Zebradil\SilexDoctrineDbalModelRepository\AbstractRepository;
 
 /**
@@ -51,5 +52,29 @@ class SenseRepository extends AbstractRepository
         ];
 
         return $this->instantiateCollection($this->db->fetchAll($builder, $params));
+    }
+
+    /**
+     * @param string $name Parent sense name
+     * @return string[][] list of derivated lexemes names
+     */
+    public function getDerivatedLexemesByLexemeName($name)
+    {
+        $sql = '
+          SELECT
+            DISTINCT cs.name
+          FROM senses ps
+            JOIN sense_relations sr ON sr.parent_id = ps.id
+            JOIN senses cs ON cs.id = sr.child_id
+          WHERE ps.name = :senseName
+            AND sr.name = :relationName
+          ORDER BY 1';
+
+        $params = [
+            'senseName' => mb_strtoupper($name),
+            'relationName' => SenseRelation::TYPE_DERIVED_FROM,
+        ];
+
+        return $this->db->fetchAll($sql, $params);
     }
 }

@@ -47,4 +47,17 @@ class Sense extends AbstractModel
 
         return $this->_relations;
     }
+
+    /**
+     * @return SenseRelation[]
+     */
+    public function getRelationsByType($relationName)
+    {
+        return array_filter(
+            $this->getRelations(),
+            function (SenseRelation $relation) use ($relationName) {
+                return $relation->name === $relationName;
+            }
+        );
+    }
 }

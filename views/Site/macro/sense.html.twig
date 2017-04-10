@@ -2,7 +2,7 @@
     <div class="sense-list">
         {% for sense in senses %}
             <div class="sense">
-                {% if sense.is(currentSense) %}
+                {% if currentSense and sense.is(currentSense) %}
                     <strong>{{ sense.name }}</strong>
                 {% else %}
                     <a href="{{ path('search', { searchString: sense.name }) }}">{{ sense.name }}</a>

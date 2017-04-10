@@ -8,10 +8,21 @@
         {% if senses is not empty %}
             <div class="lexeme">
                 <h1 class="lexeme-title" data-jbootoc-skip>{{ searchString|upper }}</h1>
+                {% if derivitedLexemesCollection is not empty %}
+                    <div class="derivated-lexemes">
+                        <h2 class="relation-title" data-jbootoc-id="derivated-lexemes">
+                            {{ 'derived_from'|trans }}
+                        </h2>
+                        <div class="relations-subjects">
+                            {{ _sense.senseList(derivitedLexemesCollection) }}
+                        </div>
+                    </div>
+                {% endif %}
                 <div class="senses">
                     {% for sense in senses %}
                         <div class="sense">
-                            <h2 class="sense-title" data-jbootoc-id="{{ sense.name|translit }}">{{ sense.name|capitalize }} {{ sense.meaning ? sense.meaning }}</h2>
+                            <h2 class="sense-title" data-jbootoc-id="{{ sense.name|translit }}">{{ sense.name|capitalize }}
+                                {{ sense.meaning ? sense.meaning }}</h2>
                             {% set relations = sense.getGroupedRelatedSenses() %}
                             {% if relations %}
                                 <div class="sense-relations relations">
