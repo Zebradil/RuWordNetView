@@ -46,7 +46,7 @@ if (null === $cfg
     )
 ) {
     # TODO Log this
-    echo 'Что-то пошло не так.';
+    echo 'Oops! Something wrong.';
     exit;
 }
 $app->register(new DoctrineServiceProvider(), [
