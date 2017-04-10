@@ -8,3 +8,4 @@ rsync-exclude
 vendor
 *.log
 app/config/database.json
+var/cache/*

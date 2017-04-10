@@ -108,6 +108,9 @@ $app['site.controller'] = $app->share(function () use ($app) {
 $app->register(new TwigServiceProvider(), [
     'twig.path' => __DIR__ . '/../views',
     'twig.strict_variables' => false,
+    'twig.options' => [
+        'cache' => __DIR__ . '/../var/cache/twig',
+    ],
 ]);
 
 $app->extend('twig', function($twig, $app) {
