@@ -41,7 +41,11 @@
                             <div class="synset">
                                 <h3 class="synset-title" data-jbootoc-id="synset">{{ 'synset'|trans|capitalize }}</h3>
                                 <div class="synonyms">
-                                    {{ _sense.senseList(synset.senses, sense) }}
+                                    {{ _sense.senseList(
+                                        synset.senses,
+                                        sense,
+                                        '[Понятие РуТез: ' ~ synset.name ~ ']')
+                                    }}
                                 </div>
                                 <div class="synset-relations relations">
                                     {% for groupName, relations in synset.getGroupedRelations() %}
@@ -50,7 +54,11 @@
                                             <div class="relations-subjects">
                                                 {% for relation in relations %}
                                                     <div class="synset">
-                                                        {{ _sense.senseList(relation.getChildSynset().getSenses(), sense) }}
+                                                        {{ _sense.senseList(
+                                                            relation.getChildSynset().getSenses(),
+                                                            sense,
+                                                            '[Понятие РуТез: ' ~ relation.getChildSynset().name ~ ']'
+                                                        ) }}
                                                     </div>
                                                 {% endfor %}
                                             </div>

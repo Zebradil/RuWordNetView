@@ -1,4 +1,4 @@
-{% macro senseList(senses, currentSense) %}
+{% macro senseList(senses, currentSense, tail) %}
     <div class="sense-list">
         {% for sense in senses %}
             <div class="sense">
@@ -10,5 +10,6 @@
                 {{- loop.last ? '' : ',' }}
             </div>
         {% endfor %}
+        {{ tail }}
     </div>
 {% endmacro %}
