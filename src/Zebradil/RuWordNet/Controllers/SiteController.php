@@ -6,7 +6,11 @@ use Psr\Log\LoggerInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
 use Twig_Environment;
+use Twig_Error_Loader;
+use Twig_Error_Runtime;
+use Twig_Error_Syntax;
 use Zebradil\RuWordNet\Models\Sense;
+use Zebradil\RuWordNet\Repositories\SenseRepository;
 
 /**
  * Class SiteController.
@@ -32,6 +36,9 @@ class SiteController
 
     /**
      * @return string
+     * @throws Twig_Error_Loader
+     * @throws Twig_Error_Runtime
+     * @throws Twig_Error_Syntax
      */
     public function homepageAction()
     {
@@ -44,6 +51,9 @@ class SiteController
      * @param int $meaning
      *
      * @return string
+     * @throws Twig_Error_Loader
+     * @throws Twig_Error_Runtime
+     * @throws Twig_Error_Syntax
      */
     public function senseAction(Application $app, string $name, int $meaning)
     {
@@ -61,9 +71,18 @@ class SiteController
         return $this->twig->render('Site/sense.html.twig', $data);
     }
 
+    /**
+     * @param Request $request
+     * @param Application $app
+     * @return string
+     * @throws Twig_Error_Loader
+     * @throws Twig_Error_Runtime
+     * @throws Twig_Error_Syntax
+     */
     public function searchAction(Request $request, Application $app)
     {
         $searchString = $request->get('searchString');
+        /** @var SenseRepository $senseRepository */
         $senseRepository = $app['repository']->getFor(Sense::class);
         $senses = $senseRepository->getByName($searchString);
         $derivitedLexemesCollection = $senseRepository->getDerivatedLexemesByLexemeName($searchString);

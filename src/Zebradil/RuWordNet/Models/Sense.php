@@ -49,9 +49,10 @@ class Sense extends AbstractModel
     }
 
     /**
+     * @param string $relationName
      * @return SenseRelation[]
      */
-    public function getRelationsByType($relationName)
+    public function getRelationsByType(string $relationName)
     {
         return array_filter(
             $this->getRelations(),

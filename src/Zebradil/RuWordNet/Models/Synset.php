@@ -42,7 +42,7 @@ class Synset extends AbstractModel
             }
         }
 
-        return;
+        return null;
     }
 
     /**

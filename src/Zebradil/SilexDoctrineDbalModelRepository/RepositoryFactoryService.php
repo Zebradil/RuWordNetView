@@ -3,6 +3,7 @@
 namespace Zebradil\SilexDoctrineDbalModelRepository;
 
 use Doctrine\DBAL\Connection;
+use UnexpectedValueException;
 
 /**
  * Class RepositoryFactoryService.
@@ -47,7 +48,7 @@ class RepositoryFactoryService
         if (isset($this->repositories[$modelClass])) {
             return $this->repositoryInstances[$modelClass] = new $this->repositories[$modelClass]($this->connection, $this);
         } else {
-            throw new \UnexpectedValueException('No repository registered for model ' . $modelClass);
+            throw new UnexpectedValueException('No repository registered for model ' . $modelClass);
         }
     }
 }

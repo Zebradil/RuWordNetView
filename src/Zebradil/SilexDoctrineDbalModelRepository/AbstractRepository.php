@@ -3,6 +3,8 @@
 namespace Zebradil\SilexDoctrineDbalModelRepository;
 
 use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\Exception\InvalidArgumentException;
+use UnexpectedValueException;
 
 /**
  * Represents a base Repository.
@@ -30,19 +32,19 @@ abstract class AbstractRepository
     public function __construct(Connection $db, RepositoryFactoryService $repositoryFactory)
     {
         if (null === static::TABLE_NAME) {
-            throw new \UnexpectedValueException('Table name not defined');
+            throw new UnexpectedValueException('Table name not defined');
         }
 
         if (null === static::MODEL_CLASS) {
-            throw new \UnexpectedValueException('Model class not defined');
+            throw new UnexpectedValueException('Model class not defined');
         }
 
         if (!class_exists(static::MODEL_CLASS)) {
-            throw new \UnexpectedValueException('Model class defined but not exists');
+            throw new UnexpectedValueException('Model class defined but not exists');
         }
 
         if (null === static::PRIMARY_KEY) {
-            throw new \UnexpectedValueException('Primary key not defined');
+            throw new UnexpectedValueException('Primary key not defined');
         }
 
         $this->db = $db;
@@ -96,6 +98,7 @@ abstract class AbstractRepository
      * @param ModelInterface $object
      *
      * @return int The number of affected rows.
+     * @throws InvalidArgumentException
      */
     public function delete(ModelInterface $object):int
     {

@@ -92,10 +92,10 @@ abstract class AbstractModel implements ModelInterface
             }
             if (!empty($cfg['nullable'])) {
                 if ($value === null) {
-                    return;
+                    return null;
                 }
                 if ($value === '' && $cfg['type'] !== Type::STRING) {
-                    return;
+                    return null;
                 }
             }
             switch ($cfg['type']) {
