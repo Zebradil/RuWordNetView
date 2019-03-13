@@ -1,5 +1,5 @@
 {
-    "name": "Zebradil/RuWordNetView",
+    "name": "zebradil/ruwordnet-view",
     "description": "Web interface for querying to RuWordNet thesauri database",
     "minimum-stability": "stable",
     "license": "proprietary",
