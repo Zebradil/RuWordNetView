@@ -94,7 +94,7 @@ class AbstractCollection implements CollectionInterface
      */
     protected function ensureValidValue($element)
     {
-        if (null === static::ELEMENT_CLASS || $element instanceof static::ELEMENT_CLASS) {
+        if (null === static::ELEMENT_CLASS || $element instanceof (static::ELEMENT_CLASS)) {
             return;
         }
         throw new \DomainException('Collection element must be an instance of ' . static::ELEMENT_CLASS);
