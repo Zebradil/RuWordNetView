@@ -7,10 +7,10 @@
     <div class="lexeme-page">
         {% if senses is not empty %}
             <div class="lexeme">
-                <h1 class="lexeme-title" data-jbootoc-skip>{{ searchString|upper }}</h1>
+                <h1 class="lexeme-title">{{ searchString|upper }}</h1>
                 {% if derivitedLexemesCollection is not empty %}
                     <div class="derivated-lexemes">
-                        <h2 class="relation-title" data-jbootoc-id="derivated-lexemes">
+                        <h2 class="relation-title">
                             {{ 'derived_from'|trans }}
                         </h2>
                         <div class="relations-subjects">
@@ -21,14 +21,14 @@
                 <div class="senses">
                     {% for sense in senses %}
                         <div class="sense">
-                            <h2 class="sense-title" data-jbootoc-id="{{ sense.name|translit }}">{{ sense.name|capitalize }}
+                            <h2 class="sense-title">{{ sense.name|capitalize }}
                                 {{ sense.meaning ? sense.meaning }}</h2>
                             {% set relations = sense.getGroupedRelatedSenses() %}
                             {% if relations %}
                                 <div class="sense-relations relations">
                                     {% for groupName, relatedSenses in relations %}
                                         <div class="relation">
-                                            <h3 class="relation-title" data-jbootoc-id="{{ groupName }}">{{ groupName|trans }}</h3>
+                                            <h3 class="relation-title">{{ groupName|trans }}</h3>
                                             <div class="relations-subjects">
                                                 {{ _sense.senseList(relatedSenses, sense) }}
                                             </div>
@@ -39,18 +39,17 @@
 
                             {% set synset = sense.getSynset() %}
                             <div class="synset">
-                                <h3 class="synset-title" data-jbootoc-id="synset">{{ 'synset'|trans|capitalize }}</h3>
+                                <h3 class="synset-title">{{ 'synset'|trans|capitalize }}</h3>
                                 <div class="synonyms">
                                     {{ _sense.senseList(
                                         synset.senses,
                                         sense,
-                                        '[Понятие РуТез: ' ~ synset.name ~ ']')
-                                    }}
+                                        '[Понятие РуТез: ' ~ synset.name ~ ']') }}
                                 </div>
                                 <div class="synset-relations relations">
                                     {% for groupName, relations in synset.getGroupedRelations() %}
                                         <div class="relation">
-                                            <h4 class="relations-title" data-jbootoc-id="{{ groupName }}">{{ groupName|trans }}</h4>
+                                            <h4 class="relations-title">{{ groupName|trans }}</h4>
                                             <div class="relations-subjects">
                                                 {% for relation in relations %}
                                                     <div class="synset">
@@ -72,7 +71,7 @@
                 </div>
             </div>
         {% else %}
-            <h4 data-jbootoc-skip>По запросу «{{ searchString }}» ничего не найдено</h4>
+            <h4>По запросу «{{ searchString }}» ничего не найдено</h4>
         {% endif %}
     </div>
 {% endblock %}

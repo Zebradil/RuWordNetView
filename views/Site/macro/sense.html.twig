@@ -10,6 +10,8 @@
                 {{- loop.last ? '' : ',' }}
             </div>
         {% endfor %}
-        {{ tail }}
+        <div class="tail">
+            {{ tail }}
+        </div>
     </div>
 {% endmacro %}

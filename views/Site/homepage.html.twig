@@ -1,5 +1,7 @@
 {% extends "Site/layout.html.twig" %}
 
 {% block content %}
-    {% include 'Site/parts/translations/homepage_text.' ~ app.locale ~ '.html' %}
+    <div id="homepage">
+        {% include 'Site/parts/translations/homepage_text.' ~ app.locale ~ '.html' %}
+    </div>
 {% endblock %}

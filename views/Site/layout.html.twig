@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="{{ app.translator.locale }}">
 <head>
     <meta charset="UTF-8">
     <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
@@ -10,96 +10,58 @@
     <meta name="theme-color" content="#ffffff">
     <title>{% block title %}RuWordNet{% endblock %}</title>
     {% block stylesheets %}
-        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
-        <link rel="stylesheet" href="https://cdn.rawgit.com/afeld/bootstrap-toc/v0.3.0/dist/bootstrap-toc.min.css">
-        <link rel="stylesheet" href="/static/bootstrap/css/bootstrap-theme.css">
+        <link rel="stylesheet" href="/static/css/normalize.css?1">
         <link rel="stylesheet" href="/static/css/layout.min.css?1">
     {% endblock %}
 </head>
-<body data-spy="scroll" data-target="#toc">
+<body>
 
-<div class="container-fluid">
-    <div class="row header clearfix">
-        <nav class="col-md-12 navbar">
-            <div class="container-fluid">
-                <div class="navbar-header">
-                    <a class="navbar-brand" href="/">{{ 'navbar_brand'|trans }}</a>
-                </div>
-                <form class="navbar-form navbar-left"
-                      id="search-form"
-                      role="search"
-                      action="{{ path('search') }}"
-                      onsubmit="return searchFormSubmit(this);">
-                    <div class="input-group">
-                        <input type="text"
-                               class="form-control"
-                               placeholder="{{ 'search_placeholder'|trans|capitalize }}"
-                               name="searchString"
-                               value="{{ searchString|default('') }}"
-                               id="form-search-field">
-                        <span class="input-group-btn">
-                                <button type="submit" class="btn btn-primary">{{ 'search'|trans|capitalize }}</button>
-                            </span>
-                    </div>
-                </form>
-                <script>
-                    function searchFormSubmit(form) {
-                        location.href = form.action + '/' + document.getElementById('form-search-field').value;
-                        return false;
-                    }
-                </script>
-                <div class="navbar-right">
-                    {% set route = app.request.get('_route') %}
-                    {% set params = app.request.get('_route_params') %}
-                    {% if app.translator.locale == 'ru' %}
-                        <a href="{{ path(route, params|merge({'_locale': 'en'})) }}">
-                            <span class="flag">&#x1F1FA;&#x1F1F8;</span>
-                            English version</a>
-                    {% else %}
-                        <a href="{{ path(route, params|merge({'_locale': 'ru'})) }}">
-                            <span class="flag">&#x1F1F7;&#x1F1FA;</span>
-                            Версия на Русском</a>
-                    {% endif %}
-                </div>
-            </div>
-        </nav>
-    </div>
-
-    <div class="row">
-        <div class="col-sm-3 col-md-2">
-            <nav id="toc" data-spy="affix" class="col-sm-3 col-md-2"></nav>
+<div id="container">
+    <div id="header">
+        <div id="logo">
+            <a href="/">{{ 'navbar_brand'|trans }}</a>
         </div>
-        <div class="col-sm-9 col-md-10">
-            {% block content %}{% endblock %}
+        <form id="search-form"
+              role="search"
+              action="{{ path('search') }}"
+              onsubmit="return searchFormSubmit(this);">
+            <input type="text"
+                   placeholder="{{ 'search_placeholder'|trans|capitalize }}"
+                   name="searchString"
+                   value="{{ searchString|default('') }}"
+                   id="form-search-field">
+            <span> <button type="submit">{{ 'search'|trans|capitalize }}</button> </span>
+        </form>
+        <script>
+            function searchFormSubmit(form) {
+                location.href = form.action + '/' + document.getElementById('form-search-field').value;
+                return false;
+            }
+        </script>
+        <div id="flag-box">
+            {% set route = app.request.get('_route') %}
+            {% set params = app.request.get('_route_params') %}
+            {% if app.translator.locale == 'ru' %}
+                <a href="{{ path(route, params|merge({'_locale': 'en'})) }}" title="English version">
+                    <span class="flag">&#x1F1EC;&#x1F1E7;</span>
+                </a>
+            {% else %}
+                <a href="{{ path(route, params|merge({'_locale': 'ru'})) }}" title="Версия на Русском">
+                    <span class="flag">&#x1F1F7;&#x1F1FA;</span>
+                </a>
+            {% endif %}
         </div>
     </div>
 
-    <footer class="row">
-        <div class="col-sm-3 col-md-2"></div>
-        <div class="col-sm-9 col-md-10">
-            <p><strong>Developed by <a href="https://github.com/Zebradil">German Lashevich</a> 2017</strong></p>
-            <p><a href="https://github.com/Zebradil/RuWordNetView">Github project page</a></p>
-        </div>
+    <div id="content">
+        {% block content %}{% endblock %}
+    </div>
+
+    <footer>
+        <p>Developed by <a href="https://github.com/Zebradil">German Lashevich</a> 2017</p>
+        <p><a href="https://github.com/Zebradil/RuWordNetView">Github project page</a></p>
     </footer>
+</div>
 
-</div> <!-- /container -->
-
-{% block javascripts %}
-    <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
-    <script src="/static/js/jbootoc.js"></script>
-    <script>
-        $(function () {
-            "use strict";
-            var navSelector = "#toc";
-            $(navSelector).jbootoc({
-                depth: 3,
-            });
-            $("body").scrollspy({
-                target: navSelector
-            });
-        });
-    </script>
-{% endblock %}
 </body>
 </html>
