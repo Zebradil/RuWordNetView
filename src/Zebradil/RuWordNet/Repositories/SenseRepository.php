@@ -20,7 +20,7 @@ class SenseRepository extends AbstractRepository
      *
      * @return array
      */
-    public function getSimilarByName(string $name):array
+    public function getSimilarByName(string $name): array
     {
         $builder = $this->db->createQueryBuilder()
             ->select(Sense::getFields())
@@ -39,7 +39,7 @@ class SenseRepository extends AbstractRepository
         return $this->instantiateCollection($this->db->fetchAll($builder, $params));
     }
 
-    public function getByName(string $name):array
+    public function getByName(string $name): array
     {
         $builder = $this->db->createQueryBuilder()
             ->select(Sense::getFields())
@@ -56,9 +56,9 @@ class SenseRepository extends AbstractRepository
 
     /**
      * @param string $name Parent sense name
-     * @return string[][] list of derivated lexemes names
+     * @return string[][] list of derived lexemes names
      */
-    public function getDerivatedLexemesByLexemeName($name)
+    public function getDerivedLexemesByLexemeName($name)
     {
         $sql = '
           SELECT
