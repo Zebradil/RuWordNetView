@@ -5,7 +5,9 @@
                 {% if currentSense and sense.is(currentSense) %}
                     <strong>{{ sense.name }}</strong>
                 {% else %}
-                    <a href="{{ path('search', { searchString: sense.name }) }}">{{ sense.name }}</a>
+                    <a href="{{ path('sense', { name: sense.name, meaning: sense.meaning }) }}">
+                        {{- sense.name -}}
+                    </a>
                 {%- endif %}
                 {{- loop.last ? '' : ',' }}
             </div>

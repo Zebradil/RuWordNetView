@@ -65,10 +65,11 @@ class SiteController
             ]);
 
         $data = [
-            'sense' => $sense,
+            'searchString' => $name,
+            'senses' => [$sense],
         ];
 
-        return $this->twig->render('Site/sense.html.twig', $data);
+        return $this->twig->render('Site/lexeme_summary.html.twig', $data);
     }
 
     /**
