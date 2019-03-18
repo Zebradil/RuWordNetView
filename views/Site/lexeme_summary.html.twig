@@ -8,16 +8,6 @@
         {% if senses is not empty %}
             <div class="lexeme">
                 <h1 class="lexeme-title">{{ searchString|upper }}</h1>
-                {% if derivedLexemesCollection is not empty %}
-                    <div class="derived-lexemes">
-                        <h2 class="relation-title">
-                            {{ 'derived_from'|trans }}
-                        </h2>
-                        <div class="relations-subjects">
-                            {{ _sense.senseList(derivedLexemesCollection) }}
-                        </div>
-                    </div>
-                {% endif %}
                 <div class="senses">
                     {% for sense in senses %}
                         <div class="sense">

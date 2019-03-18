@@ -84,8 +84,8 @@ class SiteController
         $searchString = $request->get('searchString');
         /** @var SenseRepository $senseRepository */
         $senseRepository = $app['repository']->getFor(Sense::class);
+        /** @var Sense[] $senses */
         $senses = $senseRepository->getByName($searchString);
-        $derivedLexemesCollection = $senseRepository->getDerivedLexemesByLexemeName($searchString);
 
         usort($senses, function ($a, $b) {
             return $a->meaning <=> $b->meaning;
@@ -94,7 +94,6 @@ class SiteController
         $data = [
             'searchString' => $searchString,
             'senses' => $senses,
-            'derivedLexemesCollection' => $derivedLexemesCollection,
         ];
 
         return $this->twig->render('Site/lexeme_summary.html.twig', $data);

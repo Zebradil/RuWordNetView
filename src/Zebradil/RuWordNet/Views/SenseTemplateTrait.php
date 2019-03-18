@@ -19,7 +19,7 @@ trait SenseTemplateTrait
     public function getGroupedRelatedSenses(): array
     {
         /** @type Sense $this */
-        return $this->groupSensesFromSenseRelations($this->getRelationsByType(SenseRelation::TYPE_COMPOSED_OF));
+        return $this->groupSensesFromSenseRelations($this->getRelations());
     }
 
     /**
