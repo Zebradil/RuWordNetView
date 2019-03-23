@@ -16,8 +16,11 @@ $app->get('/{_locale}', "site.controller:homepageAction");
 $app->get('/{_locale}/', "site.controller:homepageAction")->bind('homepage');
 $app->get('/{_locale}/search', "site.controller:searchAction")->bind('search');
 $app->get('/{_locale}/search/', "site.controller:searchAction");
-$app->get('/{_locale}/search/{searchString}', "site.controller:searchAction");
-$app->get('/{_locale}/sense/{name}/{meaning}', "site.controller:senseAction")
+$app->get('/{_locale}/search/{searchString}', "site.controller:searchAction")
+    ->assert('searchString', '.*');
+$app->get('/{_locale}/sense/{name}+{meaning}', "site.controller:senseAction")
+    ->assert('meaning', '\d')
+    ->assert('name', '[^+]+')
     ->value('meaning', 0)
     ->bind('sense');
 $app->get('/{_locale}/{whatever}', function () use ($app) {
@@ -35,7 +38,7 @@ $app->error(function (\Exception $e, $code) use ($app) {
     case 404:
         return $app['twig']->render('Site/404.html.twig', $params);
     default:
-		return $app['debug'] ? null : $app['twig']->render('Site/error.html.twig', $params);
+        return $app['debug'] ? null : $app['twig']->render('Site/error.html.twig', $params);
     }
 });
 
