@@ -21,7 +21,7 @@
                                     {{ _sense.senseList(
                                         synset.senses,
                                         sense,
-                                        '[Понятие РуТез: ' ~ synset.name ~ ']') }}
+                                        '[' ~ "ruthes_concept"|trans ~ ': ' ~ synset.name ~ ']') }}
                                 </div>
                                 {% set relations = sense.getGroupedRelatedSenses() %}
                                 {% if relations %}
@@ -46,7 +46,7 @@
                                                         {{ _sense.senseList(
                                                             relation.getChildSynset().getSenses(),
                                                             sense,
-                                                            '[Понятие РуТез: ' ~ relation.getChildSynset().name ~ ']'
+                                                            '[' ~ "ruthes_concept"|trans ~ ': ' ~ relation.getChildSynset().name ~ ']'
                                                         ) }}
                                                     </div>
                                                 {% endfor %}
