@@ -11,17 +11,19 @@
                 <div class="alternative-meanings">
                     <div>Найдено несколько значений:</div>
                     <div>
-                        {% for sense in senses %}
-                            <a href="#{{ loop.index }}">
-                                {{ sense.name|capitalize }} {{ sense.meaning ? sense.meaning }} ({{ sense.getSynset().name }})
-                            </a>
-                        {% endfor %}
+                        {% if senses|length > 1 %}
+                            {% for sense in senses %}
+                                <a href="#meaning-{{ loop.index }}">
+                                    {{ sense.name|capitalize }} {{ sense.meaning ? sense.meaning }} ({{ sense.getSynset().name }})
+                                </a>
+                            {% endfor %}
+                        {% endif %}
                     </div>
                 </div>
                 <div class="senses">
                     {% for sense in senses %}
                         <div class="sense">
-                            <h2 class="sense-title">{{ sense.name|capitalize }}
+                            <h2 class="sense-title" id="meaning-{{ sense.meaning }}">{{ sense.name|capitalize }}
                                 {{ sense.meaning ? sense.meaning }}</h2>
 
                             {% set synset = sense.getSynset() %}
