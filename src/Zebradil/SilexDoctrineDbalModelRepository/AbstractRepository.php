@@ -114,9 +114,13 @@ abstract class AbstractRepository
      *
      * @return ModelInterface
      */
-    public function find($condition): ModelInterface
+    public function find($condition): ?ModelInterface
     {
         $row = $this->db->fetchAssoc(...$this->generateQuery($condition));
+        if (false === $row) {
+            return null;
+        }
+
         $class = static::MODEL_CLASS;
         /** @var ModelInterface $object */
         $object = new $class($this->repositoryFactory);

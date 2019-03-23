@@ -66,7 +66,7 @@ class SiteController
 
         $data = [
             'searchString' => $name,
-            'senses' => [$sense],
+            'senses' => $sense ? [$sense] : [],
         ];
 
         return $this->twig->render('Site/lexeme_summary.html.twig', $data);
