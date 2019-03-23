@@ -8,11 +8,13 @@
         {% if senses is not empty %}
             <div class="lexeme">
                 <h1 class="lexeme-title">{{ searchString|upper }}</h1>
-                <div>
+                <div class="alternative-meanings">
                     <div>Найдено несколько значений:</div>
                     <div>
                         {% for sense in senses %}
-                            <a href="#{{ loop.index }}">{{ sense.name|capitalize }} {{ sense.meaning ? sense.meaning }} ({{ sense.getSynset().name }})</a>
+                            <a href="#{{ loop.index }}">
+                                {{ sense.name|capitalize }} {{ sense.meaning ? sense.meaning }} ({{ sense.getSynset().name }})
+                            </a>
                         {% endfor %}
                     </div>
                 </div>
