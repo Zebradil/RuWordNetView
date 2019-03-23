@@ -61,7 +61,7 @@
                 </div>
             </div>
         {% else %}
-            <h4>По запросу «{{ searchString }}» ничего не найдено</h4>
+            <h4>{{ "word_not_found"|trans({'%search_query%': searchString}) }}</h4>
         {% endif %}
     </div>
 {% endblock %}

@@ -83,14 +83,19 @@ class SiteController
     public function searchAction(Request $request, Application $app)
     {
         $searchString = $request->get('searchString');
-        /** @var SenseRepository $senseRepository */
-        $senseRepository = $app['repository']->getFor(Sense::class);
-        /** @var Sense[] $senses */
-        $senses = $senseRepository->getByName($searchString);
 
-        usort($senses, function ($a, $b) {
-            return $a->meaning <=> $b->meaning;
-        });
+        if(empty($searchString)) {
+            $senses = [];
+        } else {
+            /** @var SenseRepository $senseRepository */
+            $senseRepository = $app['repository']->getFor(Sense::class);
+            /** @var Sense[] $senses */
+            $senses = $senseRepository->getByName($searchString);
+
+            usort($senses, function ($a, $b) {
+                return $a->meaning <=> $b->meaning;
+            });
+        }
 
         $data = [
             'searchString' => $searchString,

@@ -34,13 +34,18 @@
         </form>
         <script>
             function searchFormSubmit(form) {
-                location.href = form.action + '/' + document.getElementById('form-search-field').value;
+                var searchField = document.getElementById('form-search-field');
+                if (searchField.value) {
+                    location.href = form.action + '/' + searchField.value;
+                } else {
+                    searchField.focus();
+                }
                 return false;
             }
         </script>
         <div id="flag-box">
-            {% set route = app.request.get('_route') %}
-            {% set params = app.request.get('_route_params') %}
+            {% set route = app.request.get('_route')|default('homepage') %}
+            {% set params = app.request.get('_route_params')|default({}) %}
             {% if app.translator.locale == 'ru' %}
                 <a href="{{ path(route, params|merge({'_locale': 'en'})) }}" title="English version">
                     <span class="flag">&#x1F1EC;&#x1F1E7;</span>

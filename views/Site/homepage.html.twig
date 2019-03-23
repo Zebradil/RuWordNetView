@@ -2,6 +2,7 @@
 
 {% block content %}
     <div id="homepage">
-        {% include 'Site/parts/translations/homepage_text.' ~ app.locale ~ '.html' %}
+		{% set loc = app.locale == 'ru' ? 'ru' : 'en' %}
+        {% include 'Site/parts/translations/homepage_text.' ~ loc ~ '.html' %}
     </div>
 {% endblock %}
