@@ -13,19 +13,6 @@
                         <div class="sense">
                             <h2 class="sense-title">{{ sense.name|capitalize }}
                                 {{ sense.meaning ? sense.meaning }}</h2>
-                            {% set relations = sense.getGroupedRelatedSenses() %}
-                            {% if relations %}
-                                <div class="sense-relations relations">
-                                    {% for groupName, relatedSenses in relations %}
-                                        <div class="relation">
-                                            <h3 class="relation-title">{{ groupName|trans }}</h3>
-                                            <div class="relations-subjects">
-                                                {{ _sense.senseList(relatedSenses, sense) }}
-                                            </div>
-                                        </div>
-                                    {% endfor %}
-                                </div>
-                            {% endif %}
 
                             {% set synset = sense.getSynset() %}
                             <div class="synset">
@@ -36,6 +23,19 @@
                                         sense,
                                         '[Понятие РуТез: ' ~ synset.name ~ ']') }}
                                 </div>
+                                {% set relations = sense.getGroupedRelatedSenses() %}
+                                {% if relations %}
+                                    <div class="sense-relations relations">
+                                        {% for groupName, relatedSenses in relations %}
+                                            <div class="relation">
+                                                <h3 class="relation-title">{{ groupName|trans }}</h3>
+                                                <div class="relations-subjects">
+                                                    {{ _sense.senseList(relatedSenses, sense) }}
+                                                </div>
+                                            </div>
+                                        {% endfor %}
+                                    </div>
+                                {% endif %}
                                 <div class="synset-relations relations">
                                     {% for groupName, relations in synset.getGroupedRelations() %}
                                         <div class="relation">
