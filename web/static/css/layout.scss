@@ -1,13 +1,6 @@
 $border: solid 1px hsl(0, 0%, 80%);
 $border-light: solid 1px hsl(0, 0%, 90%);
 
-/* small screens */
-@media (max-width: 768px) {
-  #logo {
-    display: none;
-  }
-}
-
 html {
   font-family: sans-serif;
   font-weight: normal;
@@ -52,6 +45,14 @@ a {
 #header {
   display: flex;
   align-items: center;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+#header-required-part {
+  display: flex;
+  align-items: center;
+  flex: 1 0 auto;
 }
 
 #search-form {
@@ -90,13 +91,14 @@ a {
     border-bottom: solid 2px #eee;
 
     span {
-      font-size: .5em;
+      font-size: .6em;
       color: #777;
     }
   }
 
   .alternative-meanings {
     display: flex;
+    flex-wrap: wrap;
     font-size: .85em;
 
     a {
@@ -115,7 +117,7 @@ a {
     padding: .25em .5em;
 
     span {
-      font-size: .5em;
+      font-size: .6em;
     }
   }
 
