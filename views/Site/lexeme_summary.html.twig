@@ -12,10 +12,10 @@
                     {{ searchString|upper }}
                     <span>{{ ("pos_" ~ POS)|trans }}</span>
                 </h1>
-                <div class="alternative-meanings">
-                    <div>Найдено несколько значений:</div>
-                    <div>
-                        {% if senses|length > 1 %}
+                {% if senses|length > 1 %}
+                    <div class="alternative-meanings">
+                        <div>Найдено несколько значений:</div>
+                        <div>
                             {% for sense in senses %}
                                 <a href="#meaning-{{ loop.index }}">
                                     {{ sense.name|capitalize }}
@@ -23,9 +23,9 @@
                                     ({{ sense.getSynset().name|lower }})
                                 </a>
                             {% endfor %}
-                        {% endif %}
+                        </div>
                     </div>
-                </div>
+                {% endif %}
                 <div class="senses">
                     {% for sense in senses %}
                         <div class="sense">
