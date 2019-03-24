@@ -7,7 +7,11 @@
     <div class="lexeme-page">
         {% if senses is not empty %}
             <div class="lexeme">
-                <h1 class="lexeme-title">{{ searchString|upper }}</h1>
+                {% set POS = senses[0].getSynset().part_of_speech %}
+                <h1 class="lexeme-title">
+                    {{ searchString|upper }}
+                    <span>({{ ("pos_" ~ POS)|trans }})</span>
+                </h1>
                 <div class="alternative-meanings">
                     <div>Найдено несколько значений:</div>
                     <div>

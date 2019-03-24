@@ -88,6 +88,11 @@ a {
   .lexeme-title {
     margin-top: 0;
     border-bottom: solid 2px #eee;
+
+    span {
+      font-size: .5em;
+      color: #777;
+    }
   }
 
   .alternative-meanings {

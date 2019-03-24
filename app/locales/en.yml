@@ -11,3 +11,7 @@ ruthes_concept: RuThes concept
 page_not_found: Page not found
 word_not_found: Nothing is found for «%search_query%»
 
+pos_N: noun
+pos_V: verb
+pos_Adj: adjective
+

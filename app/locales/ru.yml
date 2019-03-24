@@ -22,3 +22,7 @@ ruthes_concept: Понятие РуТез
 page_not_found: Страница не найдена
 word_not_found: По запросу «%search_query%» ничего не найдено
 
+pos_N: существительное
+pos_V: глагол
+pos_Adj: прилагательное
+
