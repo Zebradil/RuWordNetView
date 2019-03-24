@@ -10,7 +10,7 @@
                 {% set POS = senses[0].getSynset().part_of_speech %}
                 <h1 class="lexeme-title">
                     {{ searchString|upper }}
-                    <span>({{ ("pos_" ~ POS)|trans }})</span>
+                    <span>{{ ("pos_" ~ POS)|trans }}</span>
                 </h1>
                 <div class="alternative-meanings">
                     <div>Найдено несколько значений:</div>
@@ -18,7 +18,9 @@
                         {% if senses|length > 1 %}
                             {% for sense in senses %}
                                 <a href="#meaning-{{ loop.index }}">
-                                    {{ sense.name|capitalize }} {{ sense.meaning ? sense.meaning }} ({{ sense.getSynset().name }})
+                                    {{ sense.name|capitalize }}
+                                    {{ sense.meaning ? sense.meaning }}
+                                    ({{ sense.getSynset().name|lower }})
                                 </a>
                             {% endfor %}
                         {% endif %}
@@ -27,17 +29,20 @@
                 <div class="senses">
                     {% for sense in senses %}
                         <div class="sense">
-                            <h2 class="sense-title" id="meaning-{{ sense.meaning }}">{{ sense.name|capitalize }}
-                                {{ sense.meaning ? sense.meaning }}</h2>
-
                             {% set synset = sense.getSynset() %}
+                            <h2 class="sense-title" id="meaning-{{ sense.meaning }}">
+                                {{ sense.name|capitalize }}
+                                {{ sense.meaning ? sense.meaning }}
+                                <span>{{ synset.name|lower }}</span>
+                            </h2>
+
                             <div class="synset">
                                 <h3 class="synset-title">{{ 'synset'|trans|capitalize }}</h3>
                                 <div class="synonyms">
                                     {{ _sense.senseList(
                                         synset.senses,
                                         sense,
-                                        '[' ~ "ruthes_concept"|trans ~ ': ' ~ synset.name ~ ']') }}
+                                        '[' ~ "ruthes_concept"|trans ~ ': ' ~ synset.name|lower ~ ']') }}
                                 </div>
                                 {% set relations = sense.getGroupedRelatedSenses() %}
                                 {% if relations %}
@@ -62,7 +67,7 @@
                                                         {{ _sense.senseList(
                                                             relation.getChildSynset().getSenses(),
                                                             sense,
-                                                            '[' ~ "ruthes_concept"|trans ~ ': ' ~ relation.getChildSynset().name ~ ']'
+                                                            '[' ~ "ruthes_concept"|trans ~ ': ' ~ relation.getChildSynset().name|lower ~ ']'
                                                         ) }}
                                                     </div>
                                                 {% endfor %}
