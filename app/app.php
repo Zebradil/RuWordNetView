@@ -4,12 +4,10 @@ use Silex\Application;
 use Silex\Provider\DoctrineServiceProvider;
 use Silex\Provider\MonologServiceProvider;
 use Silex\Provider\ServiceControllerServiceProvider;
-use Silex\Provider\TranslationServiceProvider;
 use Silex\Provider\TwigServiceProvider;
 use Silex\Provider\UrlGeneratorServiceProvider;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\Translation\Loader\YamlFileLoader;
 use Zebradil\RuWordNet\Controllers\SiteController;
 use Zebradil\RuWordNet\Models\Sense;
 use Zebradil\RuWordNet\Models\SenseRelation;
@@ -113,7 +111,7 @@ $app->register(new TwigServiceProvider(), [
     ],
 ]);
 
-$app->extend('twig', function($twig, $app) {
+$app->extend('twig', function ($twig, $app) {
     $tr = Transliterator::create('Cyrillic-Latin');
     $twig->addFilter(
         'translit',
