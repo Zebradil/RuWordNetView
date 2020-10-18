@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+usermod -u ${DEV_UID} developer
+groupmod -g ${DEV_GID} developer
+
+gosu developer $@
