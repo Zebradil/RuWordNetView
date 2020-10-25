@@ -4,7 +4,7 @@ namespace Zebradil\ModelCollection;
 
 trait BitwiseFlagTrait
 {
-    protected $_flags = 0;
+    protected int $_flags = 0;
 
     protected function getFlag($flag): int
     {

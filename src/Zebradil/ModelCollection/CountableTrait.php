@@ -4,7 +4,7 @@ namespace Zebradil\ModelCollection;
 
 trait CountableTrait
 {
-    protected $_array = [];
+    protected array $_array = [];
 
     /**
      * Count elements of an object.

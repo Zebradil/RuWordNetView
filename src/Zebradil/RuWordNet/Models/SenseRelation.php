@@ -23,8 +23,8 @@ class SenseRelation extends AbstractModel
     const TYPE_COMPOSED_OF = 'composed_of';
     const TYPE_DERIVED_FROM = 'derived_from';
 
-    private $_parentSense;
-    private $_childSense;
+    private ?Sense $_parentSense = null;
+    private ?Sense $_childSense = null;
 
     /**
      * @return Sense

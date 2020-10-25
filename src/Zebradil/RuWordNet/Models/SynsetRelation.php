@@ -60,10 +60,8 @@ class SynsetRelation extends AbstractModel
         self::TYPE_DERIVATIONAL,
     ];
 
-    /** @var Synset */
-    private $_childSynset;
-    /** @var Synset */
-    private $_parentSynset;
+    private ?Synset $_childSynset = null;
+    private ?Synset $_parentSynset = null;
 
     /**
      * @param static[] $relations

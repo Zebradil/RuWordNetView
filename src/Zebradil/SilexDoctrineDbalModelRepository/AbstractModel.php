@@ -10,17 +10,17 @@ use Doctrine\DBAL\Types\Type;
 abstract class AbstractModel implements ModelInterface
 {
     const FIELDS_CONFIG = [];
-    protected static $_fields_defaults = [];
-    protected $_isExists = false;
-    protected $_loadAfterSave = false;
+    protected static array $_fields_defaults = [];
+    protected bool $_isExists = false;
+    protected bool $_loadAfterSave = false;
     /**
      * @var string
      */
-    protected $protoClassName = '';
+    protected string $protoClassName = '';
     /**
      * @var RepositoryFactoryService
      */
-    protected $_repositoryFactory;
+    protected RepositoryFactoryService $_repositoryFactory;
 
     /**
      * {@inheritdoc}
@@ -56,7 +56,7 @@ abstract class AbstractModel implements ModelInterface
     }
 
     /** {@inheritdoc} */
-    public function assign(array $data, $decode = false)
+    public function assign(array $data, $decode = false): self
     {
         $data = $decode ? $this->decodeData($data) : $data;
         $cfg = static::FIELDS_CONFIG;
@@ -138,7 +138,7 @@ abstract class AbstractModel implements ModelInterface
     }
 
     /** {@inheritdoc} */
-    public function setIsExists($value)
+    public function setIsExists($value): self
     {
         $this->_isExists = (bool) $value;
 

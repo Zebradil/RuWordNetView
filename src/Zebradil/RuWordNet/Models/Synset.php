@@ -27,9 +27,9 @@ class Synset extends AbstractModel
     ];
 
     /** @var Sense[] */
-    private $_senses;
+    private array $_senses;
     /** @var SynsetRelation[] */
-    private $_relations;
+    private ?array $_relations = null;
 
     /**
      * @return null|SynsetRelation
@@ -95,8 +95,7 @@ class Synset extends AbstractModel
             $this->_senses = $this
                 ->_repositoryFactory
                 ->getFor(Sense::class)
-                ->findAll(['synset_id' => $this->id])
-            ;
+                ->findAll(['synset_id' => $this->id]);
         }
 
         return $this->_senses;

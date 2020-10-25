@@ -19,11 +19,11 @@ abstract class AbstractRepository
     /**
      * @var Connection
      */
-    public $db;
+    public Connection $db;
     /**
      * @var RepositoryFactoryService
      */
-    private $repositoryFactory;
+    private RepositoryFactoryService $repositoryFactory;
 
     /**
      * @param Connection               $db

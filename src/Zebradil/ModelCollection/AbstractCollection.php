@@ -6,6 +6,9 @@ namespace Zebradil\ModelCollection;
 // $collection->getChildren() // returns array, so is applicable to all
 // all/first, get/set
 // $c->one()->not()->hasChildren()
+use BadMethodCallException;
+use DomainException;
+
 class AbstractCollection implements CollectionInterface
 {
     use IteratorTrait,
@@ -20,8 +23,8 @@ class AbstractCollection implements CollectionInterface
     const FLAG_GET = 0b10;
     const FLAG_SET = ~self::FLAG_GET;
     const FLAG_NOT = 0b100;
-    protected $_array = [];
-    protected $_position = 0;
+    protected array $_array = [];
+    protected int $_position = 0;
 
 
     public function one(): AbstractCollection
@@ -60,7 +63,7 @@ class AbstractCollection implements CollectionInterface
             return $this->executeMethod($name, $args);
         }
         $class = static::ELEMENT_CLASS;
-        throw new \BadMethodCallException("Method $class::$name not exists");
+        throw new BadMethodCallException("Method $class::$name not exists");
     }
 
     protected function executeMethod($name, $args)
@@ -97,6 +100,6 @@ class AbstractCollection implements CollectionInterface
         if (null === static::ELEMENT_CLASS || $element instanceof (static::ELEMENT_CLASS)) {
             return;
         }
-        throw new \DomainException('Collection element must be an instance of ' . static::ELEMENT_CLASS);
+        throw new DomainException('Collection element must be an instance of ' . static::ELEMENT_CLASS);
     }
 }

@@ -4,7 +4,7 @@ namespace Zebradil\ModelCollection;
 
 trait ArrayAccessTrait
 {
-    protected $_array = [];
+    protected array $_array = [];
 
     /**
      * Whether a offset exists.

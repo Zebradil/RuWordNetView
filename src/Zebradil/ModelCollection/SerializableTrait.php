@@ -4,7 +4,7 @@ namespace Zebradil\ModelCollection;
 
 trait SerializableTrait
 {
-    protected $_array = [];
+    protected array $_array = [];
 
     /**
      * String representation of object.

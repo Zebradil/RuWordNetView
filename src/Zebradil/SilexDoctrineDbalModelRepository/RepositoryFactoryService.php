@@ -13,14 +13,14 @@ class RepositoryFactoryService
     /**
      * @var Connection
      */
-    private $connection;
+    private Connection $connection;
     /**
      * @var array
      */
-    private $repositories;
+    private array $repositories;
 
     /** @var AbstractRepository[] */
-    private $repositoryInstances = [];
+    private array $repositoryInstances = [];
 
     /**
      * RepositoryFactoryService constructor.

@@ -18,9 +18,9 @@ use Zebradil\RuWordNet\Repositories\SenseRepository;
 class SiteController
 {
     /** @var Twig_Environment */
-    private $twig;
+    private Twig_Environment $twig;
     /** @var LoggerInterface */
-    private $logger;
+    private LoggerInterface $logger;
 
     /**
      * SiteController constructor.
@@ -35,9 +35,9 @@ class SiteController
     }
 
     /**
-     * @throws Twig_Error_Loader
      * @throws Twig_Error_Runtime
      * @throws Twig_Error_Syntax
+     * @throws Twig_Error_Loader
      *
      * @return string
      */
@@ -51,9 +51,9 @@ class SiteController
      * @param string      $name
      * @param int         $meaning
      *
-     * @throws Twig_Error_Loader
      * @throws Twig_Error_Runtime
      * @throws Twig_Error_Syntax
+     * @throws Twig_Error_Loader
      *
      * @return string
      */
@@ -79,9 +79,9 @@ class SiteController
      * @param Request     $request
      * @param Application $app
      *
-     * @throws Twig_Error_Loader
      * @throws Twig_Error_Runtime
      * @throws Twig_Error_Syntax
+     * @throws Twig_Error_Loader
      *
      * @return string
      */

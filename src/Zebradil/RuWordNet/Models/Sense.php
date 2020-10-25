@@ -30,7 +30,7 @@ class Sense extends AbstractModel
         'meaning' => ['type' => Type::SMALLINT],
     ];
 
-    private $_relations;
+    private ?array $_relations = null;
 
     public function getSynset(): Synset
     {

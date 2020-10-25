@@ -4,8 +4,8 @@ namespace Zebradil\ModelCollection;
 
 trait IteratorTrait
 {
-    protected $_array = [];
-    protected $_position = 0;
+    protected array $_array = [];
+    protected int $_position = 0;
 
     /**
      * Return the current element.
