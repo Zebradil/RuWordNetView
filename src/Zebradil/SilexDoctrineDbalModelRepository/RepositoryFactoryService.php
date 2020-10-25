@@ -26,7 +26,7 @@ class RepositoryFactoryService
      * RepositoryFactoryService constructor.
      *
      * @param Connection $connection
-     * @param array $repositories
+     * @param array      $repositories
      */
     public function __construct(Connection $connection, array $repositories)
     {
@@ -47,8 +47,8 @@ class RepositoryFactoryService
 
         if (isset($this->repositories[$modelClass])) {
             return $this->repositoryInstances[$modelClass] = new $this->repositories[$modelClass]($this->connection, $this);
-        } else {
-            throw new UnexpectedValueException('No repository registered for model ' . $modelClass);
         }
+
+        throw new UnexpectedValueException('No repository registered for model '.$modelClass);
     }
 }

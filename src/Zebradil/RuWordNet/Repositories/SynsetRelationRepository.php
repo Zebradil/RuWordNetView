@@ -20,12 +20,13 @@ class SynsetRelationRepository extends AbstractRepository
      *
      * @return SynsetRelation[]
      */
-    public function findAllForSynset(Synset $synset)
+    public function findAllForSynset(Synset $synset): array
     {
         $builder = $this->db->createQueryBuilder()
             ->select(SynsetRelation::getFields())
             ->from(static::TABLE_NAME, 't')
-            ->where('parent_id = :id');
+            ->where('parent_id = :id')
+        ;
 
         return $this->instantiateCollection($this->db->fetchAll($builder, ['id' => $synset->id]));
     }

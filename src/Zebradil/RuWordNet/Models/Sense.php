@@ -18,8 +18,9 @@ use Zebradil\SilexDoctrineDbalModelRepository\AbstractModel;
  */
 class Sense extends AbstractModel
 {
-    use SenseTemplateTrait,
-        ModelComparisonTrait;
+    use SenseTemplateTrait;
+    use ModelComparisonTrait;
+
     const FIELDS_CONFIG = [
         'id' => ['type' => Type::GUID],
         'synset_id' => ['type' => Type::GUID],
@@ -50,9 +51,10 @@ class Sense extends AbstractModel
 
     /**
      * @param string $relationName
+     *
      * @return SenseRelation[]
      */
-    public function getRelationsByType(string $relationName)
+    public function getRelationsByType(string $relationName): array
     {
         return array_filter(
             $this->getRelations(),

@@ -20,12 +20,13 @@ class SenseRelationRepository extends AbstractRepository
      *
      * @return SenseRelation[]
      */
-    public function findAllForSense(Sense $sense)
+    public function findAllForSense(Sense $sense): array
     {
         $builder = $this->db->createQueryBuilder()
             ->select(SenseRelation::getFields())
             ->from(static::TABLE_NAME, 't')
-            ->where('parent_id = :id');
+            ->where('parent_id = :id')
+        ;
 
         return $this->instantiateCollection($this->db->fetchAll($builder, ['id' => $sense->id]));
     }

@@ -11,7 +11,7 @@ use UnexpectedValueException;
  */
 abstract class AbstractRepository
 {
-    /** @var string|null */
+    /** @var null|string */
     const TABLE_NAME = null;
     const MODEL_CLASS = null;
     const PRIMARY_KEY = null;
@@ -26,7 +26,7 @@ abstract class AbstractRepository
     private $repositoryFactory;
 
     /**
-     * @param Connection $db
+     * @param Connection               $db
      * @param RepositoryFactoryService $repositoryFactory
      */
     public function __construct(Connection $db, RepositoryFactoryService $repositoryFactory)
@@ -54,11 +54,11 @@ abstract class AbstractRepository
     /**
      * @param ModelInterface $object
      *
-     * @return int The number of affected rows.
+     * @return int the number of affected rows
      */
     public function insert(ModelInterface $object): int
     {
-        assert('$object instanceof ' . static::MODEL_CLASS);
+        \assert('$object instanceof '.static::MODEL_CLASS);
 
         return $this->db->insert(static::TABLE_NAME, $object->getRawData());
     }
@@ -68,28 +68,13 @@ abstract class AbstractRepository
      *
      * @param ModelInterface $object
      *
-     * @return int The number of affected rows.
+     * @return int the number of affected rows
      */
     public function update(ModelInterface $object): int
     {
-        assert('$object instanceof ' . static::MODEL_CLASS);
+        \assert('$object instanceof '.static::MODEL_CLASS);
 
         return $this->db->update(static::TABLE_NAME, $object->getRawData(), $this->extractPrimaryKey($object));
-    }
-
-    /**
-     * @param ModelInterface $object
-     *
-     * @return array
-     */
-    protected function extractPrimaryKey(ModelInterface $object): array
-    {
-        $pk = [];
-        foreach (static::PRIMARY_KEY as $field) {
-            $pk[$field] = $object->{$field};
-        }
-
-        return $pk;
     }
 
     /**
@@ -97,12 +82,13 @@ abstract class AbstractRepository
      *
      * @param ModelInterface $object
      *
-     * @return int The number of affected rows.
      * @throws InvalidArgumentException
+     *
+     * @return int the number of affected rows
      */
-    public function delete(ModelInterface $object):int
+    public function delete(ModelInterface $object): int
     {
-        assert('$object instanceof ' . static::MODEL_CLASS);
+        \assert('$object instanceof '.static::MODEL_CLASS);
 
         return $this->db->delete(static::TABLE_NAME, $this->extractPrimaryKey($object));
     }
@@ -110,7 +96,7 @@ abstract class AbstractRepository
     /**
      * Returns a record by supplied id.
      *
-     * @param int|string|array $condition
+     * @param array|int|string $condition
      *
      * @return ModelInterface
      */
@@ -128,12 +114,39 @@ abstract class AbstractRepository
         return $object->assign($row)->setIsExists(true);
     }
 
-    protected function generateQuery($condition, $singleRow = true)
+    /**
+     * Returns all records from this repository's table.
+     *
+     * @param $condition
+     *
+     * @return ModelInterface[]
+     */
+    public function findAll($condition = null): array
+    {
+        return $this->instantiateCollection($this->db->fetchAll(...$this->generateQuery($condition, false)));
+    }
+
+    /**
+     * @param ModelInterface $object
+     *
+     * @return array
+     */
+    protected function extractPrimaryKey(ModelInterface $object): array
+    {
+        $pk = [];
+        foreach (static::PRIMARY_KEY as $field) {
+            $pk[$field] = $object->{$field};
+        }
+
+        return $pk;
+    }
+
+    protected function generateQuery($condition, $singleRow = true): array
     {
         list($where, $parameters) = $condition ? $this->buildWhereStatement($condition) : ['1=1', []];
         $select = $this->buildSelectFields();
         $table = static::TABLE_NAME;
-        $sql = "SELECT $select FROM $table WHERE $where" . ($singleRow ? ' LIMIT 1' : '');
+        $sql = "SELECT {$select} FROM {$table} WHERE {$where}".($singleRow ? ' LIMIT 1' : '');
 
         return [$sql, $parameters];
     }
@@ -143,16 +156,16 @@ abstract class AbstractRepository
      *
      * @return array
      */
-    protected function buildWhereStatement($condition):array
+    protected function buildWhereStatement($condition): array
     {
-        if (is_array($condition)) {
+        if (\is_array($condition)) {
             return [implode(' AND ', array_map(function ($key) {
-                return "$key = :$key";
+                return "{$key} = :{$key}";
             }, array_keys($condition))), $condition];
         } elseif (is_numeric($condition)) {
             $pk = static::PRIMARY_KEY;
 
-            return ["$pk = :$pk", [$pk => $condition]];
+            return ["{$pk} = :{$pk}", [$pk => $condition]];
         } else {
             return [$condition, []];
         }
@@ -170,19 +183,8 @@ abstract class AbstractRepository
     }
 
     /**
-     * Returns all records from this repository's table.
-     *
-     * @param $condition
-     *
-     * @return ModelInterface[]
-     */
-    public function findAll($condition = null):array
-    {
-        return $this->instantiateCollection($this->db->fetchAll(...$this->generateQuery($condition, false)));
-    }
-
-    /**
      * @param array $rows
+     *
      * @return ModelInterface[]
      */
     protected function instantiateCollection(array $rows): array

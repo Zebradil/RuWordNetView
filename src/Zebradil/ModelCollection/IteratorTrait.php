@@ -10,9 +10,9 @@ trait IteratorTrait
     /**
      * Return the current element.
      *
-     * @link http://php.net/manual/en/iterator.current.php
+     * @see http://php.net/manual/en/iterator.current.php
      *
-     * @return mixed Can return any type.
+     * @return mixed can return any type
      *
      * @since 5.0.0
      */
@@ -24,7 +24,7 @@ trait IteratorTrait
     /**
      * Move forward to next element.
      *
-     * @link http://php.net/manual/en/iterator.next.php
+     * @see http://php.net/manual/en/iterator.next.php
      * @since 5.0.0
      */
     public function next()
@@ -35,9 +35,9 @@ trait IteratorTrait
     /**
      * Return the key of the current element.
      *
-     * @link http://php.net/manual/en/iterator.key.php
+     * @see http://php.net/manual/en/iterator.key.php
      *
-     * @return mixed scalar on success, or null on failure.
+     * @return mixed scalar on success, or null on failure
      *
      * @since 5.0.0
      */
@@ -49,14 +49,14 @@ trait IteratorTrait
     /**
      * Checks if current position is valid.
      *
-     * @link http://php.net/manual/en/iterator.valid.php
+     * @see http://php.net/manual/en/iterator.valid.php
      *
      * @return bool The return value will be casted to boolean and then evaluated.
      *              Returns true on success or false on failure.
      *
      * @since 5.0.0
      */
-    public function valid()
+    public function valid(): bool
     {
         return isset($this->_array[$this->_position]);
     }
@@ -64,7 +64,7 @@ trait IteratorTrait
     /**
      * Rewind the Iterator to the first element.
      *
-     * @link http://php.net/manual/en/iterator.rewind.php
+     * @see http://php.net/manual/en/iterator.rewind.php
      * @since 5.0.0
      */
     public function rewind()

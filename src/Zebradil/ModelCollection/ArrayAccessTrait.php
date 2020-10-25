@@ -9,7 +9,7 @@ trait ArrayAccessTrait
     /**
      * Whether a offset exists.
      *
-     * @link http://php.net/manual/en/arrayaccess.offsetexists.php
+     * @see http://php.net/manual/en/arrayaccess.offsetexists.php
      *
      * @param mixed $offset <p>
      *                      An offset to check for.
@@ -22,7 +22,7 @@ trait ArrayAccessTrait
      *
      * @since 5.0.0
      */
-    public function offsetExists($offset)
+    public function offsetExists($offset): bool
     {
         return isset($this->_array[$offset]);
     }
@@ -30,13 +30,13 @@ trait ArrayAccessTrait
     /**
      * Offset to retrieve.
      *
-     * @link http://php.net/manual/en/arrayaccess.offsetget.php
+     * @see http://php.net/manual/en/arrayaccess.offsetget.php
      *
      * @param mixed $offset <p>
      *                      The offset to retrieve.
      *                      </p>
      *
-     * @return mixed Can return all value types.
+     * @return mixed can return all value types
      *
      * @since 5.0.0
      */
@@ -48,7 +48,7 @@ trait ArrayAccessTrait
     /**
      * Offset to set.
      *
-     * @link http://php.net/manual/en/arrayaccess.offsetset.php
+     * @see http://php.net/manual/en/arrayaccess.offsetset.php
      *
      * @param mixed $offset <p>
      *                      The offset to assign the value to.
@@ -61,7 +61,7 @@ trait ArrayAccessTrait
      */
     public function offsetSet($offset, $value)
     {
-        /** @var AbstractCollection $this */
+        // @var AbstractCollection $this
         $this->ensureValidValue($value);
         if (null === $offset) {
             $this->_array[] = $value;
@@ -73,7 +73,7 @@ trait ArrayAccessTrait
     /**
      * Offset to unset.
      *
-     * @link http://php.net/manual/en/arrayaccess.offsetunset.php
+     * @see http://php.net/manual/en/arrayaccess.offsetunset.php
      *
      * @param mixed $offset <p>
      *                      The offset to unset.

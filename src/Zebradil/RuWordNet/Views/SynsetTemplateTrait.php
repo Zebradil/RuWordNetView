@@ -7,13 +7,13 @@ use Zebradil\RuWordNet\Models\SynsetRelation;
 
 trait SynsetTemplateTrait
 {
-    public function getGroupedUpwardRelations()
+    public function getGroupedUpwardRelations(): array
     {
-        /* @var Synset $this */
+        // @var Synset $this
         return $this->groupRelations($this->getUpwardRelations());
     }
 
-    public function groupRelations($relations)
+    public function groupRelations($relations): array
     {
         $result = [];
         foreach ($relations as $relation) {
@@ -24,7 +24,7 @@ trait SynsetTemplateTrait
             }
         }
 
-        uksort($result, function  ($a, $b) {
+        uksort($result, function ($a, $b) {
             $relationOrder = array_flip([
                 SynsetRelation::TYPE_HYPERNYM,
                 SynsetRelation::TYPE_HYPONYM,
@@ -45,26 +45,27 @@ trait SynsetTemplateTrait
             ]);
             $a = $relationOrder[$a] ?? $a;
             $b = $relationOrder[$b] ?? $b;
+
             return $a <=> $b;
         });
 
         return $result;
     }
 
-    public function getGroupedRelations()
+    public function getGroupedRelations(): array
     {
         return $this->groupRelations($this->getRelations());
     }
 
-    public function getGroupedDownwardRelations()
+    public function getGroupedDownwardRelations(): array
     {
-        /* @var Synset $this */
+        // @var Synset $this
         return $this->groupRelations($this->getDownwardRelations());
     }
 
-    public function getGroupedSymmetricRelations()
+    public function getGroupedSymmetricRelations(): array
     {
-        /* @var Synset $this */
+        // @var Synset $this
         return $this->groupRelations($this->getSymmetricRelations());
     }
 }

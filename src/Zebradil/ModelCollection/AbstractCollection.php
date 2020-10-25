@@ -3,7 +3,7 @@
 
 namespace Zebradil\ModelCollection;
 
-// $collection->getChildren() // returns array, so is applicable to all 
+// $collection->getChildren() // returns array, so is applicable to all
 // all/first, get/set
 // $c->one()->not()->hasChildren()
 class AbstractCollection implements CollectionInterface
@@ -24,31 +24,31 @@ class AbstractCollection implements CollectionInterface
     protected $_position = 0;
 
 
-    public function one()
+    public function one(): AbstractCollection
     {
         $this->setFlag(static::FLAG_ONE);
         return $this;
     }
 
-    public function all()
+    public function all(): AbstractCollection
     {
         $this->setFlag(static::FLAG_ALL);
         return $this;
     }
 
-    public function not()
+    public function not(): AbstractCollection
     {
         $this->setFlag(static::FLAG_NOT);
         return $this;
     }
 
-    public function get()
+    public function get(): AbstractCollection
     {
         $this->setFlag(static::FLAG_GET);
         return $this;
     }
 
-    public function set()
+    public function set(): AbstractCollection
     {
         $this->setFlag(static::FLAG_SET);
         return $this;

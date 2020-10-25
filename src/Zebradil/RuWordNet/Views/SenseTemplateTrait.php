@@ -9,8 +9,8 @@ trait SenseTemplateTrait
 {
     public function getFullName(): string
     {
-        /* @type Sense $this */
-        return $this->name . ($this->meaning ? ' ' . $this->meaning : '');
+        // @type Sense $this
+        return $this->name.($this->meaning ? ' '.$this->meaning : '');
     }
 
     /**
@@ -18,12 +18,13 @@ trait SenseTemplateTrait
      */
     public function getGroupedRelatedSenses(): array
     {
-        /** @type Sense $this */
+        // @type Sense $this
         return $this->groupSensesFromSenseRelations($this->getRelations());
     }
 
     /**
      * @param SenseRelation[] $relations
+     *
      * @return SenseRelation[]
      */
     protected function groupSensesFromSenseRelations(array $relations): array
@@ -44,6 +45,7 @@ trait SenseTemplateTrait
             ]);
             $a = $relationOrder[$a] ?? $a;
             $b = $relationOrder[$b] ?? $b;
+
             return $a <=> $b;
         });
 

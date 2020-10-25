@@ -9,13 +9,13 @@ trait SerializableTrait
     /**
      * String representation of object.
      *
-     * @link http://php.net/manual/en/serializable.serialize.php
+     * @see http://php.net/manual/en/serializable.serialize.php
      *
      * @return string the string representation of the object or null
      *
      * @since 5.1.0
      */
-    public function serialize()
+    public function serialize(): string
     {
         return serialize($this->_array);
     }
@@ -23,7 +23,7 @@ trait SerializableTrait
     /**
      * Constructs the object.
      *
-     * @link http://php.net/manual/en/serializable.unserialize.php
+     * @see http://php.net/manual/en/serializable.unserialize.php
      *
      * @param string $serialized <p>
      *                           The string representation of the object.

@@ -6,8 +6,7 @@ use Silex\Application;
 use Silex\ServiceProviderInterface;
 
 /**
- * Class RepositoryServiceProvider
- * @package Zebradil\SilexDoctrineDbalModelRepository
+ * Class RepositoryServiceProvider.
  */
 class RepositoryServiceProvider implements ServiceProviderInterface
 {
@@ -25,6 +24,7 @@ class RepositoryServiceProvider implements ServiceProviderInterface
     {
         $app['repository'] = $app->share(function ($app) {
             $app['db']->setFetchMode(\PDO::FETCH_ASSOC);
+
             return new RepositoryFactoryService($app['db'], $app['repository.repositories']);
         });
     }

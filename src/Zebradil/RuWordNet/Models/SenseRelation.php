@@ -1,14 +1,12 @@
 <?php
 
-
 namespace Zebradil\RuWordNet\Models;
 
 use Doctrine\DBAL\Types\Type;
 use Zebradil\SilexDoctrineDbalModelRepository\AbstractModel;
 
 /**
- * Class SenseRelation
- * @package Zebradil\RuWordNet\Models
+ * Class SenseRelation.
  *
  * @property string parent_id
  * @property string child_id

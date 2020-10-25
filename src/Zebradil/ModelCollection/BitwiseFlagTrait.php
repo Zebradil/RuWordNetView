@@ -6,7 +6,7 @@ trait BitwiseFlagTrait
 {
     protected $_flags = 0;
 
-    protected function getFlag($flag)
+    protected function getFlag($flag): int
     {
         return $flag === $flag >= 0
             ? ($this->_flags & $flag)

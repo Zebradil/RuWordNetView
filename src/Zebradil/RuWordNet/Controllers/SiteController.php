@@ -26,7 +26,7 @@ class SiteController
      * SiteController constructor.
      *
      * @param Twig_Environment $twig
-     * @param LoggerInterface $logger
+     * @param LoggerInterface  $logger
      */
     public function __construct(Twig_Environment $twig, LoggerInterface $logger)
     {
@@ -35,34 +35,37 @@ class SiteController
     }
 
     /**
-     * @return string
      * @throws Twig_Error_Loader
      * @throws Twig_Error_Runtime
      * @throws Twig_Error_Syntax
+     *
+     * @return string
      */
-    public function homepageAction()
+    public function homepageAction(): string
     {
         return $this->twig->render('Site/homepage.html.twig');
     }
 
     /**
      * @param Application $app
-     * @param string $name
-     * @param int $meaning
+     * @param string      $name
+     * @param int         $meaning
      *
-     * @return string
      * @throws Twig_Error_Loader
      * @throws Twig_Error_Runtime
      * @throws Twig_Error_Syntax
+     *
+     * @return string
      */
-    public function senseAction(Application $app, string $name, int $meaning)
+    public function senseAction(Application $app, string $name, int $meaning): string
     {
         $sense = $app['repository']
             ->getFor(Sense::class)
             ->find([
                 'name' => mb_strtoupper($name),
-                'meaning' => $meaning
-            ]);
+                'meaning' => $meaning,
+            ])
+        ;
 
         $data = [
             'searchString' => $name,
@@ -73,18 +76,20 @@ class SiteController
     }
 
     /**
-     * @param Request $request
+     * @param Request     $request
      * @param Application $app
-     * @return string
+     *
      * @throws Twig_Error_Loader
      * @throws Twig_Error_Runtime
      * @throws Twig_Error_Syntax
+     *
+     * @return string
      */
-    public function searchAction(Request $request, Application $app)
+    public function searchAction(Request $request, Application $app): string
     {
         $searchString = $request->get('searchString');
 
-        if(empty($searchString)) {
+        if (empty($searchString)) {
             $senses = [];
         } else {
             /** @var SenseRepository $senseRepository */

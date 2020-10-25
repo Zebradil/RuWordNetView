@@ -16,8 +16,8 @@ use Zebradil\SilexDoctrineDbalModelRepository\AbstractModel;
  */
 class Synset extends AbstractModel
 {
-    use SynsetTemplateTrait,
-        ModelComparisonTrait;
+    use SynsetTemplateTrait;
+    use ModelComparisonTrait;
 
     const FIELDS_CONFIG = [
         'id' => ['type' => Type::GUID],
@@ -32,9 +32,9 @@ class Synset extends AbstractModel
     private $_relations;
 
     /**
-     * @return SynsetRelation|null
+     * @return null|SynsetRelation
      */
-    public function getHypernym()
+    public function getHypernym(): ?SynsetRelation
     {
         foreach ($this->getRelations() as $relation) {
             if ($relation->isHypernym()) {
@@ -48,7 +48,7 @@ class Synset extends AbstractModel
     /**
      * @return SynsetRelation[]
      */
-    public function getRelations():array
+    public function getRelations(): array
     {
         if (null === $this->_relations) {
             $this->_relations = $this->_repositoryFactory->getFor(SynsetRelation::class)->findAllForSynset($this);
@@ -60,7 +60,7 @@ class Synset extends AbstractModel
     /**
      * @return SynsetRelation[]
      */
-    public function getDownwardRelations():array
+    public function getDownwardRelations(): array
     {
         return SynsetRelation::filterDownwardRelations($this->getRelations());
     }
@@ -68,7 +68,7 @@ class Synset extends AbstractModel
     /**
      * @return SynsetRelation[]
      */
-    public function getUpwardRelations():array
+    public function getUpwardRelations(): array
     {
         return SynsetRelation::filterUpwardRelations($this->getRelations());
     }
@@ -76,12 +76,12 @@ class Synset extends AbstractModel
     /**
      * @return SynsetRelation[]
      */
-    public function getSymmetricRelations():array
+    public function getSymmetricRelations(): array
     {
         return SynsetRelation::filterSymmetricRelations($this->getRelations());
     }
 
-    public function getFirstSense()
+    public function getFirstSense(): Sense
     {
         return $this->getSenses()[0];
     }
@@ -89,13 +89,14 @@ class Synset extends AbstractModel
     /**
      * @return Sense[]
      */
-    public function getSenses():array
+    public function getSenses(): array
     {
         if (!isset($this->_senses)) {
             $this->_senses = $this
                 ->_repositoryFactory
                 ->getFor(Sense::class)
-                ->findAll(['synset_id' => $this->id]);
+                ->findAll(['synset_id' => $this->id])
+            ;
         }
 
         return $this->_senses;

@@ -9,7 +9,7 @@ trait CountableTrait
     /**
      * Count elements of an object.
      *
-     * @link http://php.net/manual/en/countable.count.php
+     * @see http://php.net/manual/en/countable.count.php
      *
      * @return int The custom count as an integer.
      *             </p>
@@ -18,8 +18,8 @@ trait CountableTrait
      *
      * @since 5.1.0
      */
-    public function count()
+    public function count(): int
     {
-        return count($this->_array);
+        return \count($this->_array);
     }
 }

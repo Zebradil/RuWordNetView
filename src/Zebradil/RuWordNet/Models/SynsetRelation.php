@@ -77,19 +77,6 @@ class SynsetRelation extends AbstractModel
 
     /**
      * @param static[] $relations
-     * @param string[] $types
-     *
-     * @return static[]
-     */
-    private static function filterRelationsByTypes(array $relations, array $types): array
-    {
-        return array_filter($relations, function ($relation) use ($types) {
-            return in_array($relation->name, $types, true);
-        });
-    }
-
-    /**
-     * @param static[] $relations
      *
      * @return static[]
      */
@@ -103,7 +90,7 @@ class SynsetRelation extends AbstractModel
      *
      * @return static[]
      */
-    public static function filterSymmetricRelations($relations)
+    public static function filterSymmetricRelations($relations): array
     {
         return static::filterRelationsByTypes($relations, static::SYMMETRIC_RELATIONS);
     }
@@ -129,8 +116,21 @@ class SynsetRelation extends AbstractModel
     /**
      * @return bool
      */
-    public function isHypernym()
+    public function isHypernym(): bool
     {
         return $this->name === static::TYPE_HYPERNYM;
+    }
+
+    /**
+     * @param static[] $relations
+     * @param string[] $types
+     *
+     * @return static[]
+     */
+    private static function filterRelationsByTypes(array $relations, array $types): array
+    {
+        return array_filter($relations, function ($relation) use ($types) {
+            return \in_array($relation->name, $types, true);
+        });
     }
 }

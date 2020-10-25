@@ -3,7 +3,6 @@
 namespace Zebradil\SilexDoctrineDbalModelRepository;
 
 use Doctrine\DBAL\Types\Type;
-use Silex\Application;
 
 /**
  * Class AbstractModel.
@@ -29,7 +28,7 @@ abstract class AbstractModel implements ModelInterface
     public function __construct(RepositoryFactoryService $repositoryFactory)
     {
         if (empty(static::FIELDS_CONFIG)) {
-            throw new \UnexpectedValueException('Field configuration not defined in class ' . static::class);
+            throw new \UnexpectedValueException('Field configuration not defined in class '.static::class);
         }
 
         $this->_repositoryFactory = $repositoryFactory;
@@ -39,19 +38,21 @@ abstract class AbstractModel implements ModelInterface
         }
     }
 
-    /**
-     * @return array
-     */
-    protected static function getDefaultValues()
+    public function __isset($name): bool
     {
-        $defaults = [];
-        foreach (static::FIELDS_CONFIG as $field => $cfg) {
-            if (isset($cfg['default'])) {
-                $defaults[$field] = $cfg['default'];
-            }
-        }
+        $cfg = static::FIELDS_CONFIG;
 
-        return $defaults;
+        return isset($cfg[$name]);
+    }
+
+    /** {@inheritdoc} */
+    public function __set($name, $value)
+    {
+        $cfg = static::FIELDS_CONFIG;
+        if (!isset($cfg[$name])) {
+            throw new \InvalidArgumentException("Попытка присвоения значения непубличному свойству «{$name}»");
+        }
+        $this->{$name} = $this->cast($name, $value);
     }
 
     /** {@inheritdoc} */
@@ -75,50 +76,11 @@ abstract class AbstractModel implements ModelInterface
     }
 
     /**
-     * Преобразует значение к указанному типу поля модели.
-     *
-     * @param string $name Имя поля модели
-     * @param mixed $value Преобразуемое значение
-     * @param bool $encode Применять ли обработку значения с помощью указанного в конфиге метода
-     *
-     * @return bool|int|mixed|string
-     */
-    private function cast($name, $value, $encode = true)
-    {
-        $cfg = static::FIELDS_CONFIG[$name];
-        if (is_array($cfg)) {
-            if ($encode && isset($cfg['process_fn'])) {
-                $value = $this->{$cfg['process_fn']}($value, $name, $cfg);
-            }
-            if (!empty($cfg['nullable'])) {
-                if ($value === null) {
-                    return null;
-                }
-                if ($value === '' && $cfg['type'] !== Type::STRING) {
-                    return null;
-                }
-            }
-            switch ($cfg['type']) {
-                case Type::BOOLEAN:
-                    return (bool)$value;
-                case Type::INTEGER:
-                    return (int)$value;
-                case Type::STRING:
-                    return (string)$value;
-                default:
-                    return $value;
-            }
-        } else {
-            return $value;
-        }
-    }
-
-    /**
      * @param $fields
      *
      * @return array
      */
-    public static function filterPublicFields($fields)
+    public static function filterPublicFields($fields): array
     {
         $modelFields = static::FIELDS_CONFIG;
 
@@ -130,35 +92,28 @@ abstract class AbstractModel implements ModelInterface
     /**
      * @return array
      */
-    public static function getFieldsConfig():array
+    public static function getFieldsConfig(): array
     {
         return static::FIELDS_CONFIG;
-    }
-
-    public function __isset($name)
-    {
-        $cfg = static::FIELDS_CONFIG;
-
-        return isset($cfg[$name]);
     }
 
     /**
      * Возвращает свойства объекта в виде ассоциативного массива.
      * Добавлен для совместимости с MyObj. Будет удалён в дальнейшем.
      *
-     * @deprecated
-     *
      * @param array $fields
      *
      * @return mixed[]
+     *
+     * @deprecated
      */
-    public function getAttributes(array $fields = [])
+    public function getAttributes(array $fields = []): array
     {
         return $this->getRawData($fields);
     }
 
     /** {@inheritdoc} */
-    public function getRawData(array $fields = [], $encode = false)
+    public function getRawData(array $fields = [], $encode = false): array
     {
         $data = [];
         $modelFields = static::getFields();
@@ -185,7 +140,7 @@ abstract class AbstractModel implements ModelInterface
     /** {@inheritdoc} */
     public function setIsExists($value)
     {
-        $this->_isExists = (bool)$value;
+        $this->_isExists = (bool) $value;
 
         return $this;
     }
@@ -201,22 +156,12 @@ abstract class AbstractModel implements ModelInterface
     }
 
     /** {@inheritdoc} */
-    public function isExists()
+    public function isExists(): bool
     {
         return $this->_isExists;
     }
 
-    /** {@inheritdoc} */
-    public function __set($name, $value)
-    {
-        $cfg = static::FIELDS_CONFIG;
-        if (!isset($cfg[$name])) {
-            throw new \InvalidArgumentException("Попытка присвоения значения непубличному свойству «{$name}»");
-        }
-        $this->{$name} = $this->cast($name, $value);
-    }
-
-    public function is(ModelInterface $another)
+    public function is(ModelInterface $another): ?bool
     {
         $static = static::class;
         if ($another instanceof $static) {
@@ -225,8 +170,62 @@ abstract class AbstractModel implements ModelInterface
             }
 
             return false;
+        }
+
+        throw new \UnexpectedValueException('Instance of '.static::class.' class expected, got instance of '.\get_class($another));
+    }
+
+    /**
+     * @return array
+     */
+    protected static function getDefaultValues(): array
+    {
+        $defaults = [];
+        foreach (static::FIELDS_CONFIG as $field => $cfg) {
+            if (isset($cfg['default'])) {
+                $defaults[$field] = $cfg['default'];
+            }
+        }
+
+        return $defaults;
+    }
+
+    /**
+     * Преобразует значение к указанному типу поля модели.
+     *
+     * @param string $name   Имя поля модели
+     * @param mixed  $value  Преобразуемое значение
+     * @param bool   $encode Применять ли обработку значения с помощью указанного в конфиге метода
+     *
+     * @return bool|int|mixed|string
+     */
+    private function cast($name, $value, $encode = true)
+    {
+        $cfg = static::FIELDS_CONFIG[$name];
+        if (\is_array($cfg)) {
+            if ($encode && isset($cfg['process_fn'])) {
+                $value = $this->{$cfg['process_fn']}($value, $name, $cfg);
+            }
+            if (!empty($cfg['nullable'])) {
+                if (null === $value) {
+                    return null;
+                }
+                if ('' === $value && Type::STRING !== $cfg['type']) {
+                    return null;
+                }
+            }
+            switch ($cfg['type']) {
+                case Type::BOOLEAN:
+                    return (bool) $value;
+                case Type::INTEGER:
+                    return (int) $value;
+                case Type::STRING:
+                    return (string) $value;
+                default:
+                    return $value;
+            }
         } else {
-            throw new \UnexpectedValueException('Instance of ' . static::class . ' class expected, got instance of ' . get_class($another));
+            return $value;
         }
     }
 }

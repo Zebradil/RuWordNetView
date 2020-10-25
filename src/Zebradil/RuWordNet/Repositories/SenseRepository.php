@@ -28,11 +28,12 @@ class SenseRepository extends AbstractRepository
             ->where('name LIKE :likeName')
             ->orderBy('similarity(name, :name)', 'DESC')
             ->addOrderBy('meaning')
-            ->setMaxResults(10);
+            ->setMaxResults(10)
+        ;
 
         $name = mb_strtoupper($name);
         $params = [
-            'likeName' => "%$name%",
+            'likeName' => "%{$name}%",
             'name' => $name,
         ];
 
@@ -45,7 +46,8 @@ class SenseRepository extends AbstractRepository
             ->select(Sense::getFields())
             ->from(static::TABLE_NAME)
             ->where('name = :name')
-            ->setMaxResults(10);
+            ->setMaxResults(10)
+        ;
 
         $params = [
             'name' => mb_strtoupper($name),
@@ -56,9 +58,10 @@ class SenseRepository extends AbstractRepository
 
     /**
      * @param string $name Parent sense name
+     *
      * @return string[][] list of derived lexemes names
      */
-    public function getDerivedLexemesByLexemeName($name)
+    public function getDerivedLexemesByLexemeName($name): array
     {
         $sql = '
           SELECT
