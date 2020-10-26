@@ -61,7 +61,7 @@ class SenseRepository extends AbstractRepository
      *
      * @return string[][] list of derived lexemes names
      */
-    public function getDerivedLexemesByLexemeName($name): array
+    public function getDerivedLexemesByLexemeName(string $name): array
     {
         $sql = '
           SELECT

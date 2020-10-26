@@ -2,7 +2,6 @@
 
 namespace Zebradil\RuWordNet\Views;
 
-use Zebradil\RuWordNet\Models\Sense;
 use Zebradil\RuWordNet\Models\SenseRelation;
 
 trait SenseTemplateTrait

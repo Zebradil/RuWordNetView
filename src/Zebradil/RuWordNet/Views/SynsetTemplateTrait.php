@@ -2,7 +2,6 @@
 
 namespace Zebradil\RuWordNet\Views;
 
-use Zebradil\RuWordNet\Models\Synset;
 use Zebradil\RuWordNet\Models\SynsetRelation;
 
 trait SynsetTemplateTrait

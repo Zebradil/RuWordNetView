@@ -2,6 +2,8 @@
 
 namespace Zebradil\ModelCollection;
 
+use function count;
+
 trait CountableTrait
 {
     protected array $_array = [];

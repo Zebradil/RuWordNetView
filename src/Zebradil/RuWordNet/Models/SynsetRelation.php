@@ -88,7 +88,7 @@ class SynsetRelation extends AbstractModel
      *
      * @return static[]
      */
-    public static function filterSymmetricRelations($relations): array
+    public static function filterSymmetricRelations(array $relations): array
     {
         return static::filterRelationsByTypes($relations, static::SYMMETRIC_RELATIONS);
     }

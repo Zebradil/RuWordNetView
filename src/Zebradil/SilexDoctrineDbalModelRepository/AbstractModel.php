@@ -3,6 +3,9 @@
 namespace Zebradil\SilexDoctrineDbalModelRepository;
 
 use Doctrine\DBAL\Types\Type;
+use InvalidArgumentException;
+use LogicException;
+use UnexpectedValueException;
 
 /**
  * Class AbstractModel.
@@ -23,12 +26,14 @@ abstract class AbstractModel implements ModelInterface
     protected RepositoryFactoryService $_repositoryFactory;
 
     /**
-     * {@inheritdoc}
+     * {}.
+     *
+     * @param RepositoryFactoryService $repositoryFactory
      */
     public function __construct(RepositoryFactoryService $repositoryFactory)
     {
         if (empty(static::FIELDS_CONFIG)) {
-            throw new \UnexpectedValueException('Field configuration not defined in class '.static::class);
+            throw new UnexpectedValueException('Field configuration not defined in class '.static::class);
         }
 
         $this->_repositoryFactory = $repositoryFactory;
@@ -46,11 +51,11 @@ abstract class AbstractModel implements ModelInterface
     }
 
     /** {@inheritdoc} */
-    public function __set($name, $value)
+    public function __set(string $name, $value)
     {
         $cfg = static::FIELDS_CONFIG;
         if (!isset($cfg[$name])) {
-            throw new \InvalidArgumentException("Попытка присвоения значения непубличному свойству «{$name}»");
+            throw new InvalidArgumentException("Попытка присвоения значения непубличному свойству «{$name}»");
         }
         $this->{$name} = $this->cast($name, $value);
     }
@@ -138,7 +143,7 @@ abstract class AbstractModel implements ModelInterface
     }
 
     /** {@inheritdoc} */
-    public function setIsExists($value): self
+    public function setIsExists(bool $value): self
     {
         $this->_isExists = (bool) $value;
 
@@ -151,7 +156,7 @@ abstract class AbstractModel implements ModelInterface
     public function ensureLoaded()
     {
         if (!$this->isExists()) {
-            throw new \LogicException('Объект не загружен.');
+            throw new LogicException('Объект не загружен.');
         }
     }
 
@@ -172,7 +177,7 @@ abstract class AbstractModel implements ModelInterface
             return false;
         }
 
-        throw new \UnexpectedValueException('Instance of '.static::class.' class expected, got instance of '.\get_class($another));
+        throw new UnexpectedValueException('Instance of '.static::class.' class expected, got instance of '.\get_class($another));
     }
 
     /**
@@ -199,7 +204,7 @@ abstract class AbstractModel implements ModelInterface
      *
      * @return bool|int|mixed|string
      */
-    private function cast($name, $value, $encode = true)
+    private function cast(string $name, $value, $encode = true)
     {
         $cfg = static::FIELDS_CONFIG[$name];
         if (\is_array($cfg)) {

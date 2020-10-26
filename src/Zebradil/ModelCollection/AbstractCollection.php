@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Zebradil\ModelCollection;
 
 // $collection->getChildren() // returns array, so is applicable to all
@@ -11,11 +10,11 @@ use DomainException;
 
 class AbstractCollection implements CollectionInterface
 {
-    use IteratorTrait,
-        ArrayAccessTrait,
-        CountableTrait,
-        SerializableTrait,
-        BitwiseFlagTrait;
+    use IteratorTrait;
+    use ArrayAccessTrait;
+    use CountableTrait;
+    use SerializableTrait;
+    use BitwiseFlagTrait;
 
     const ELEMENT_CLASS = null;
     const FLAG_ONE = 0b1;
@@ -26,47 +25,52 @@ class AbstractCollection implements CollectionInterface
     protected array $_array = [];
     protected int $_position = 0;
 
-
-    public function one(): AbstractCollection
-    {
-        $this->setFlag(static::FLAG_ONE);
-        return $this;
-    }
-
-    public function all(): AbstractCollection
-    {
-        $this->setFlag(static::FLAG_ALL);
-        return $this;
-    }
-
-    public function not(): AbstractCollection
-    {
-        $this->setFlag(static::FLAG_NOT);
-        return $this;
-    }
-
-    public function get(): AbstractCollection
-    {
-        $this->setFlag(static::FLAG_GET);
-        return $this;
-    }
-
-    public function set(): AbstractCollection
-    {
-        $this->setFlag(static::FLAG_SET);
-        return $this;
-    }
-
     public function __call($name, $args)
     {
         if (null === static::ELEMENT_CLASS || method_exists(static::ELEMENT_CLASS, $name)) {
             return $this->executeMethod($name, $args);
         }
         $class = static::ELEMENT_CLASS;
-        throw new BadMethodCallException("Method $class::$name not exists");
+
+        throw new BadMethodCallException("Method {$class}::{$name} not exists");
     }
 
-    protected function executeMethod($name, $args)
+    public function one(): self
+    {
+        $this->setFlag(static::FLAG_ONE);
+
+        return $this;
+    }
+
+    public function all(): self
+    {
+        $this->setFlag(static::FLAG_ALL);
+
+        return $this;
+    }
+
+    public function not(): self
+    {
+        $this->setFlag(static::FLAG_NOT);
+
+        return $this;
+    }
+
+    public function get(): self
+    {
+        $this->setFlag(static::FLAG_GET);
+
+        return $this;
+    }
+
+    public function set(): self
+    {
+        $this->setFlag(static::FLAG_SET);
+
+        return $this;
+    }
+
+    protected function executeMethod(string $name, $args)
     {
         if ($this->getFlag(static::FLAG_ONE)) {
             $not = $this->getFlag(static::FLAG_NOT);
@@ -75,21 +79,22 @@ class AbstractCollection implements CollectionInterface
                     return true;
                 }
             }
+
             return false;
-        } else {
-            if ($this->getFlag(static::FLAG_SET)) {
-                foreach ($this->_array as $element) {
-                    $element->{$name}(...$args);
-                }
-                return $this;
-            } else {
-                $result = [];
-                foreach ($this->_array as $element) {
-                    $result[] = $element->{$name}(...$args);
-                }
-                return $result;
-            }
         }
+        if ($this->getFlag(static::FLAG_SET)) {
+            foreach ($this->_array as $element) {
+                $element->{$name}(...$args);
+            }
+
+            return $this;
+        }
+        $result = [];
+        foreach ($this->_array as $element) {
+            $result[] = $element->{$name}(...$args);
+        }
+
+        return $result;
     }
 
     /**
@@ -97,9 +102,11 @@ class AbstractCollection implements CollectionInterface
      */
     protected function ensureValidValue($element)
     {
-        if (null === static::ELEMENT_CLASS || $element instanceof (static::ELEMENT_CLASS)) {
+        $class = static::ELEMENT_CLASS;
+        if (null === $class || $element instanceof $class) {
             return;
         }
-        throw new DomainException('Collection element must be an instance of ' . static::ELEMENT_CLASS);
+
+        throw new DomainException('Collection element must be an instance of '.static::ELEMENT_CLASS);
     }
 }

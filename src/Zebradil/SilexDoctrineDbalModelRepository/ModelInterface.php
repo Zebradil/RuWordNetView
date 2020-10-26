@@ -10,7 +10,7 @@ interface ModelInterface
      * @param string $name
      * @param mixed  $value
      */
-    public function __set($name, $value);
+    public function __set(string $name, $value);
 
     /**
      * @return array
@@ -41,7 +41,7 @@ interface ModelInterface
      * @param string[] $fields Список полей для фильтрации. Если список пустой, возвращаются все поля модели.
      * @param bool     $encode если данные необходимо преобразовать для помещения в хранилище, задать true
      *
-     * @return \mixed[]
+     * @return mixed[]
      */
     public function getRawData(array $fields = [], $encode = false): array;
 
@@ -55,7 +55,7 @@ interface ModelInterface
      *
      * @return $this|ModelInterface
      */
-    public function setIsExists($value): self;
+    public function setIsExists(bool $value): self;
 
     /**
      * Декодирует/преобразовывает данные в нужный формат для использования приложением.

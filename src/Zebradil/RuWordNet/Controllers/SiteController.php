@@ -5,10 +5,10 @@ namespace Zebradil\RuWordNet\Controllers;
 use Psr\Log\LoggerInterface;
 use Silex\Application;
 use Symfony\Component\HttpFoundation\Request;
+use Twig\Error\LoaderError;
+use Twig\Error\RuntimeError;
+use Twig\Error\SyntaxError;
 use Twig_Environment;
-use Twig_Error_Loader;
-use Twig_Error_Runtime;
-use Twig_Error_Syntax;
 use Zebradil\RuWordNet\Models\Sense;
 use Zebradil\RuWordNet\Repositories\SenseRepository;
 
@@ -35,9 +35,9 @@ class SiteController
     }
 
     /**
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
-     * @throws Twig_Error_Loader
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      *
      * @return string
      */
@@ -51,9 +51,9 @@ class SiteController
      * @param string      $name
      * @param int         $meaning
      *
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
-     * @throws Twig_Error_Loader
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      *
      * @return string
      */
@@ -79,9 +79,9 @@ class SiteController
      * @param Request     $request
      * @param Application $app
      *
-     * @throws Twig_Error_Runtime
-     * @throws Twig_Error_Syntax
-     * @throws Twig_Error_Loader
+     * @throws LoaderError
+     * @throws RuntimeError
+     * @throws SyntaxError
      *
      * @return string
      */

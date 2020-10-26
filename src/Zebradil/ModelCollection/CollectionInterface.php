@@ -2,6 +2,11 @@
 
 namespace Zebradil\ModelCollection;
 
-interface CollectionInterface extends \Iterator, \ArrayAccess, \Serializable, \Countable
+use ArrayAccess;
+use Countable;
+use Iterator;
+use Serializable;
+
+interface CollectionInterface extends Iterator, ArrayAccess, Serializable, Countable
 {
 }
