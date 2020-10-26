@@ -30,6 +30,8 @@ class Synset extends AbstractModel
     private array $_senses;
     /** @var SynsetRelation[] */
     private ?array $_relations = null;
+    /** @var string[][] */
+    private ?array $_iliRelations = null;
 
     /**
      * @return null|SynsetRelation
@@ -43,6 +45,18 @@ class Synset extends AbstractModel
         }
 
         return null;
+    }
+
+    /**
+     * @return string[][] ILI relations data
+     */
+    public function getIliRelations(): array
+    {
+        if (null === $this->_iliRelations) {
+            $this->_iliRelations = $this->_repositoryFactory->getFor(self::class)->getIliRelationsForSynset($this);
+        }
+
+        return $this->_iliRelations;
     }
 
     /**
@@ -95,7 +109,8 @@ class Synset extends AbstractModel
             $this->_senses = $this
                 ->_repositoryFactory
                 ->getFor(Sense::class)
-                ->findAll(['synset_id' => $this->id]);
+                ->findAll(['synset_id' => $this->id])
+            ;
         }
 
         return $this->_senses;

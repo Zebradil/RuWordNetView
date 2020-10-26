@@ -7,6 +7,8 @@ POS-synonymy: POS-synonymy
 derived_from: derived from
 composed_of: sytsets of components
 ruthes_concept: RuThes concept
+ili_relation: Interlingual Index
+definition: Wordnet definition
 
 page_not_found: Page not found
 word_not_found: Nothing is found for «%search_query%»

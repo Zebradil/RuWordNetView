@@ -58,6 +58,30 @@
                                     </div>
                                 {% endif %}
                                 <div class="synset-relations relations">
+                                    {% set iliRelations = synset.getIliRelations() %}
+                                    {% if iliRelations %}
+                                        <div class="relation">
+                                            <h4 class="relations-title">{{ 'ili_relation'|trans }}</h4>
+                                            <div class="relations-subjects">
+                                                {% for relation in iliRelations %}
+                                                    <div class="synset">
+                                                        <div class="sense-list">
+                                                            <div class="sense">
+                                                                <a target="_blank"
+                                                                   rel="noopener noreferrer"
+                                                                   href="http://wordnet-rdf.princeton.edu/ili/{{ relation.ili }}">
+                                                                    {{ relation.ili }} {{ relation.name }} ({{ relation.lemma_names|join(', ') }})
+                                                                </a>
+                                                            </div>
+                                                            <div class="tail">
+                                                                [{{ 'definition'|trans }}: {{ relation.definition }}]
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            </div>
+                                        </div>
+                                    {% endif %}
                                     {% for groupName, relations in synset.getGroupedRelations() %}
                                         <div class="relation">
                                             <h4 class="relations-title">{{ groupName|trans }}</h4>
