@@ -1,0 +1,20 @@
+<?php
+# vim: set ft=php:
+
+$finder = PhpCsFixer\Finder::create()
+    ->in('app')
+    ->in('src')
+    ->in('web')
+;
+
+$config = PhpCsFixer\Config::create()
+    ->setRiskyAllowed(true)
+    ->setRules([
+        '@PhpCsFixer' => true,
+        '@PhpCsFixer:risky' => true,
+        'no_superfluous_phpdoc_tags' => false,
+    ])
+    ->setFinder($finder)
+;
+
+return $config;
