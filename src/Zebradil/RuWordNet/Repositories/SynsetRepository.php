@@ -45,10 +45,25 @@ class SynsetRepository extends AbstractRepository
             JOIN wn_data d
               ON d.id = m.wn
               AND d.version = m.version
-          WHERE c.name = :conceptName";
+          WHERE c.name = :conceptName
+            AND :partOfSpeech LIKE '%' || substring(ili.wn_id, '.$') || '%'";
+
+        /* wn  rwn  desc
+         * n   N    NOUN
+         * v   V    VERB
+         * a   Adj  ADJECTIVE
+         * s   Adj  ADJECTIVE SATELLITE
+         * r   -    ADVERB
+         */
+        if ('Adj' === $synset->part_of_speech) {
+            $partOfSpeech = 'as';
+        } else {
+            $partOfSpeech = mb_strtolower($synset->part_of_speech);
+        }
 
         $params = [
             'conceptName' => mb_strtoupper($synset->name),
+            'partOfSpeech' => $partOfSpeech,
         ];
 
         return array_map(function (array $row) {
