@@ -32,12 +32,14 @@ class SynsetRepository extends AbstractRepository
             JOIN (
               SELECT concept_id, wn_id
               FROM ili
-              WHERE source = 'auto verified'
+              WHERE source != 'manual'
+                AND approved
               UNION
               SELECT concept_id, m.wn30
               FROM ili
                 JOIN wn_mapping m ON m.wn31 = ili.wn_id
               WHERE source = 'manual'
+                AND approved
           ) ili ON ili.concept_id = c.id
             JOIN ili_map_wn m
               ON m.wn = ili.wn_id
