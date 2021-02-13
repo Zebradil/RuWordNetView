@@ -1,16 +1,21 @@
-FROM php:7.4.11-cli-buster
+# syntax=docker/dockerfile:experimental
+
+FROM php:7.4.15-cli-buster
+
+# Ensure cache for apt packages is preserved in mounted volume
+RUN rm -f /etc/apt/apt.conf.d/docker-clean \
+ && echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 
 # Install basic tools
-RUN apt-get update \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+    apt-get update \
  && apt-get install -y --no-install-recommends \
         ca-certificates \
         curl \
         gosu \
         sudo \
         unzip \
-        wget \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+        wget
 
 # Install composer and symfony
 WORKDIR /tmp/installers
@@ -19,7 +24,8 @@ RUN bash ./install_composer \
  && mv composer.phar /usr/local/bin/composer
 
 # Install PHP extensions and their dependencies
-RUN apt-get update \
+RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
+    apt-get update \
  && apt-get install -y --no-install-recommends \
         libzip-dev \
  && docker-php-ext-install -j$(nproc) zip \
@@ -29,9 +35,7 @@ RUN apt-get update \
  && apt-get install -y --no-install-recommends \
         libpq-dev \
  && docker-php-ext-install -j$(nproc) pdo_pgsql \
- && docker-php-ext-enable opcache \
- && apt-get clean \
- && rm -rf /var/lib/apt/lists/*
+ && docker-php-ext-enable opcache
 
 RUN useradd --create-home --shell /bin/bash developer \
  && echo "developer ALL = NOPASSWD : ALL" > /etc/sudoers.d/developer
