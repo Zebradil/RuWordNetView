@@ -20,7 +20,7 @@ class Synset extends AbstractModel
     use ModelComparisonTrait;
 
     const FIELDS_CONFIG = [
-        'id' => ['type' => Type::GUID],
+        'id' => ['type' => Type::TEXT],
         'name' => ['type' => Type::TEXT],
         'definition' => ['type' => Type::TEXT],
         'part_of_speech' => ['type' => Type::TEXT],

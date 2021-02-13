@@ -22,8 +22,8 @@ class Sense extends AbstractModel
     use ModelComparisonTrait;
 
     const FIELDS_CONFIG = [
-        'id' => ['type' => Type::GUID],
-        'synset_id' => ['type' => Type::GUID],
+        'id' => ['type' => Type::TEXT],
+        'synset_id' => ['type' => Type::TEXT],
         'name' => ['type' => Type::TEXT],
         'lemma' => ['type' => Type::TEXT],
         'synt_type' => ['type' => Type::TEXT],

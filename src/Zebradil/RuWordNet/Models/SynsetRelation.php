@@ -13,8 +13,8 @@ use Zebradil\SilexDoctrineDbalModelRepository\AbstractModel;
 class SynsetRelation extends AbstractModel
 {
     const FIELDS_CONFIG = [
-        'parent_id' => ['type' => Type::GUID],
-        'child_id' => ['type' => Type::GUID],
+        'parent_id' => ['type' => Type::TEXT],
+        'child_id' => ['type' => Type::TEXT],
         'name' => ['type' => Type::TEXT],
     ];
 
