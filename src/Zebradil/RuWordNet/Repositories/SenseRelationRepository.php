@@ -25,7 +25,7 @@ class SenseRelationRepository extends AbstractRepository
         $builder = $this->db->createQueryBuilder()
             ->select(SenseRelation::getFields())
             ->from(static::TABLE_NAME, 't')
-            ->where('parent_id = :id')
+            ->where("parent_id = :id AND info <> 'deleted'")
         ;
 
         return $this->instantiateCollection($this->db->fetchAll($builder, ['id' => $sense->id]));
