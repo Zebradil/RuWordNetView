@@ -111,6 +111,9 @@ class Synset extends AbstractModel
                 ->getFor(Sense::class)
                 ->findAll(['synset_id' => $this->id])
             ;
+            usort($this->_senses, function ($a, $b) {
+                return $a->name <=> $b->name;
+            });
         }
 
         return $this->_senses;
