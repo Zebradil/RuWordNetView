@@ -62,7 +62,7 @@ class SiteController
         $sense = $app['repository']
             ->getFor(Sense::class)
             ->find([
-                'name' => mb_strtoupper($name),
+                'name' => trim(mb_strtoupper($name)),
                 'meaning' => $meaning,
             ])
         ;
@@ -87,7 +87,7 @@ class SiteController
      */
     public function searchAction(Request $request, Application $app): string
     {
-        $searchString = $request->get('searchString');
+        $searchString = trim($request->get('searchString'));
 
         if (empty($searchString)) {
             $senses = [];
