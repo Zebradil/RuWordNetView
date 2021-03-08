@@ -1,6 +1,13 @@
 {% extends "Site/layout.html.twig" %}
 
 {% block content %}
+    {% if app.locale == 'ru' %}
+    <div id="news">
+        01.2021 Подготовлена новая версия тезауруса RuWordNet 2.0.
+        Версия включает 133 745 уникальных слов и словосочетаний, 154111 тысяч значений.
+        Версия создана при поддержке фонда РФФИ (грант 18-00-01226 в составе комплексного проекта 18-00-01240&nbsp;(K))
+    </div>
+    {% endif %}
     <div id="homepage">
 		{% set loc = app.locale == 'ru' ? 'ru' : 'en' %}
         {% include 'Site/parts/translations/homepage_text.' ~ loc ~ '.html' %}

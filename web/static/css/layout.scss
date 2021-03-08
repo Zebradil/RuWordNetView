@@ -27,7 +27,7 @@ a {
 }
 
 #container {
-  padding: .5em;
+  padding: 0.5em;
   max-width: 60em;
   margin: 0 auto;
 }
@@ -64,7 +64,7 @@ a {
 #flag-box {
   display: inline-block;
   font-size: 1.7em;
-  margin-left: .5em;
+  margin-left: 0.5em;
 
   a {
     text-decoration: none;
@@ -72,7 +72,14 @@ a {
 }
 
 #content {
-  margin: .5em 0;
+  margin: 0.5em 0;
+}
+
+#news {
+  padding: 0.5em 1em;
+  background: #d4f3ff;
+  border: 1px solid #e0e0e0;
+  margin: 0.5em 0;
 }
 
 #homepage {
@@ -82,7 +89,7 @@ a {
 }
 
 .lexeme-page {
-  padding: .5em;
+  padding: 0.5em;
   background: #fff;
   border: solid 1px #ddd;
 
@@ -91,7 +98,7 @@ a {
     border-bottom: solid 2px #eee;
 
     span {
-      font-size: .6em;
+      font-size: 0.6em;
       color: #777;
     }
   }
@@ -99,7 +106,7 @@ a {
   .alternative-meanings {
     display: flex;
     flex-wrap: wrap;
-    font-size: .85em;
+    font-size: 0.85em;
 
     a {
       display: block;
@@ -112,12 +119,12 @@ a {
 
   .sense-title {
     background: #efefef;
-    margin-left: -.35em;
-    margin-right: -.35em;
-    padding: .25em .5em;
+    margin-left: -0.35em;
+    margin-right: -0.35em;
+    padding: 0.25em 0.5em;
 
     span {
-      font-size: .6em;
+      font-size: 0.6em;
     }
   }
 
@@ -130,7 +137,7 @@ a {
       counter-increment: synset_list;
       color: #999;
       font-family: monospace;
-      margin-right: .35em;
+      margin-right: 0.35em;
     }
   }
 
@@ -138,8 +145,8 @@ a {
     // white-space: nowrap;
     // overflow: hidden;
     // text-overflow: ellipsis;
-    margin: -.05em -.5em;
-    padding: .15em .5em .15em .7em;
+    margin: -0.05em -0.5em;
+    padding: 0.15em 0.5em 0.15em 0.7em;
     border: solid 1px #f0f0f0;
     border-left: none;
     border-right: none;
@@ -156,22 +163,21 @@ a {
     }
 
     .tail {
-      font-size: .85em;
+      font-size: 0.85em;
     }
   }
 }
 
 footer {
   text-align: center;
-  font-size: .8em;
+  font-size: 0.8em;
   color: #777;
 }
 
 #page404 {
-    text-align: center;
-    background: white;
-    padding: 4em 0;
-    border: solid 1px #ddd;
-    font-size: 2em;
+  text-align: center;
+  background: white;
+  padding: 4em 0;
+  border: solid 1px #ddd;
+  font-size: 2em;
 }
-

@@ -1,9 +1,9 @@
-docker-build:
+docker-build::
 	docker build \
 		-t ruwordnetview:dev \
 		-f docker/Dockerfile .
 
-dev: docker-build
+dev:: docker-build
 	docker run \
 		--network ruwordnet_default \
 		-v `pwd`:/opt/app \
@@ -12,3 +12,5 @@ dev: docker-build
 		-p 8000:8000 \
 		-it ruwordnetview:dev
 
+css::
+	sassc --style compressed web/static/css/layout.scss web/static/css/layout.min.css
