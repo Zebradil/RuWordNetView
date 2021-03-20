@@ -33,6 +33,7 @@ class SynsetRelation extends AbstractModel
 
     const TYPE_ANTONIM = 'antonym';
     const TYPE_DERIVATIONAL = 'POS-synonymy';
+    const TYPE_RELATED = 'related';
 
     const TYPE_CAUSE = 'cause';
     const TYPE_ENTAILMENT = 'entailment';
@@ -58,6 +59,7 @@ class SynsetRelation extends AbstractModel
     const SYMMETRIC_RELATIONS = [
         self::TYPE_ANTONIM,
         self::TYPE_DERIVATIONAL,
+        self::TYPE_RELATED,
     ];
 
     private ?Synset $_childSynset = null;

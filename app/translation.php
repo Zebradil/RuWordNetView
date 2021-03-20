@@ -14,7 +14,7 @@ $app->register(new TranslationServiceProvider(), [
     'locale_fallbacks' => ['en'],
 ]);
 
-$app['translator'] = $app->share($app->extend('translator', function (Translator $translator, $app) {
+$app['translator'] = $app->share($app->extend('translator', function (Translator $translator, Application $app) {
     $translator->addLoader('yaml', new YamlFileLoader());
 
     $translator->addResource('yaml', __DIR__.'/locales/en.yml', 'en');

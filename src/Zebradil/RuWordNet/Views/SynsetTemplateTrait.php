@@ -41,6 +41,7 @@ trait SynsetTemplateTrait
                 SynsetRelation::TYPE_DERIVATIONAL,
                 SynsetRelation::TYPE_CAUSE,
                 SynsetRelation::TYPE_ENTAILMENT,
+                SynsetRelation::TYPE_RELATED,
             ]);
             $a = $relationOrder[$a] ?? $a;
             $b = $relationOrder[$b] ?? $b;

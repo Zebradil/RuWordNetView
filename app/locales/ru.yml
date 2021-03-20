@@ -20,6 +20,7 @@ composed_of: синсеты компонентов
 ruthes_concept: Понятие РуТез
 ili_relation: Interlingual Index
 definition: Определение Wordnet
+related: ассоциация
 
 page_not_found: Страница не найдена
 word_not_found: По запросу «%search_query%» ничего не найдено
