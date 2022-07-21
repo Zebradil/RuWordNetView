@@ -12,6 +12,9 @@ definition: Wordnet definition
 
 page_not_found: Page not found
 word_not_found: Nothing is found for «%search_query%»
+something_went_wrong: |-
+  Something went wrong,
+  <a href="https://github.com/Zebradil/RuWordNetView/issues/new">tell us about it</a>.
 
 pos_N: noun
 pos_V: verb
