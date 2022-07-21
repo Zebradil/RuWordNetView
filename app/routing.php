@@ -36,7 +36,7 @@ $app->get('/{whatever}', function ($whatever) use ($app) {
 });
 
 $app->error(function (Exception $e, $code) use ($app) {
-    $params = []; //['_locale' => $app['locale']];
+    $params = [];
 
     switch ($code) {
     case 404:
