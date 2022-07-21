@@ -21,7 +21,7 @@ $app->get('/{_locale}/search/{searchString}', 'site.controller:searchAction')
     ->assert('searchString', '.*')
 ;
 $app->get('/{_locale}/sense/{name}+{meaning}', 'site.controller:senseAction')
-    ->assert('meaning', '\d')
+    ->assert('meaning', '\d+')
     ->assert('name', '[^+]+')
     ->value('meaning', 0)
     ->bind('sense')
