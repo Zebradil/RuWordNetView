@@ -16,3 +16,15 @@ dev:: docker-build ## Runs docker container for development
 
 css:: ## Compiles SCSS files to CSS
 	sassc --style compressed web/static/css/layout.scss web/static/css/layout.min.css
+
+deploy:: ## Uploads source code to the server
+	rsync \
+		--archive \
+		--verbose \
+		--compress \
+		--update \
+		--delete \
+		--progress \
+		--human-readable \
+		--exclude-from=rsync-exclude \
+		./ ruwordnet:/var/www/ruwordnet-view/

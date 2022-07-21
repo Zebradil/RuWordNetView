@@ -1,0 +1,9 @@
+rsync-exclude
+.git
+.gitignore
+.idea
+.realsync
+.sass-cache
+var/*
+app/config/database.json
+
