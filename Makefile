@@ -1,5 +1,7 @@
 include .bootstrap.mk
 
+build:: build-dev build-prod build-nginx ## Builds all docker images
+
 build-dev:: ## Builds dev docker image
 build-prod:: ## Builds prod docker image
 build-nginx:: ## Builds nginx docker image
@@ -7,8 +9,6 @@ build-%::
 	docker build \
 		-t ruwordnetview:$* \
 		-f docker/$*/Dockerfile .
-
-build-all:: build-dev build-prod build-nginx ## Builds all docker images
 
 dev:: build-dev ## Runs docker container for development
 	docker run \
