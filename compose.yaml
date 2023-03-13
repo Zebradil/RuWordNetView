@@ -1,0 +1,39 @@
+services:
+  proxy:
+    # Has to be built beforehand.
+    # See https://github.com/Zebradil/RuWordNetView/blob/master/Makefile
+    image: ruwordnetview:nginx
+    environment:
+      - CERTBOT_EMAIL=${CERTBOT_EMAIL:?}
+      - CERTBOT_AUTHENTICATOR=dns-cloudflare
+      - STAGING=1
+    ports:
+    - 80:80
+    - 443:443
+    volumes:
+      # Volume for nginx cache
+      - nginx_cache:/var/cache/nginx:rw
+      - nginx_secrets:/etc/letsencrypt
+      - shared_web:/var/www/html/web:ro
+
+  app:
+    image: ruwordnetview:prod
+    volumes:
+      - shared_web:/var/www/html/web:rw
+
+  database:
+    image: postgres:15.2
+    environment:
+      # *Before* building the app image the corresponding values must also be
+      # set in app/config/database.json
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      POSTGRES_USER: ${POSTGRES_USER:?}
+      POSTGRES_DB: ${POSTGRES_DB:?}
+    volumes:
+      - db_data:/var/lib/postgresql/data:rw
+
+volumes:
+  shared_web:
+  nginx_cache:
+  nginx_secrets:
+  db_data:

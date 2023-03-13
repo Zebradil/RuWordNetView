@@ -1,29 +1,30 @@
 {
-    "name": "zebradil/ruwordnet-view",
-    "description": "Web interface for querying RuWordNet thesauri database",
-    "minimum-stability": "stable",
-    "license": "proprietary",
-    "authors": [
-        {
-            "name": "German Lashevich",
-            "email": "german.lashevich@gmail.com"
-        }
-    ],
-    "require": {
-        "doctrine/dbal": "2.5.4",
-        "monolog/monolog": "^1.17",
-        "silex/silex": "v1.3.5",
-        "symfony/config": "^3.2",
-        "symfony/translation": "^3.2",
-        "symfony/twig-bridge": "^3.0",
-        "symfony/yaml": "^3.2",
-        "twig/twig": "^1.24",
-        "ext-json": "*",
-        "ext-pdo": "*"
-    },
-    "autoload": {
-        "psr-4": {
-            "": "src/"
-        }
+  "name": "zebradil/ruwordnet-view",
+  "description": "Web interface for querying RuWordNet thesauri database",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "German Lashevich",
+      "email": "german.lashevich@gmail.com"
     }
+  ],
+  "require": {
+    "php": "^7.4",
+    "doctrine/dbal": "2.5.4",
+    "monolog/monolog": "^1.17",
+    "silex/silex": "v1.3.5",
+    "symfony/config": "^3.2",
+    "symfony/translation": "^3.2",
+    "symfony/twig-bridge": "^3.0",
+    "symfony/yaml": "^3.2",
+    "twig/twig": "^1.24",
+    "ext-json": "*",
+    "ext-pdo": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "": "src/"
+    }
+  }
 }

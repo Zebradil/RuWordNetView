@@ -1,0 +1,9 @@
+*
+!composer.lock
+!composer.json
+!app
+!src
+!var
+!vendor
+!views
+!web

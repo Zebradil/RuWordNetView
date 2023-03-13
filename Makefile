@@ -1,11 +1,16 @@
 include .bootstrap.mk
 
-docker-build:: ## Builds docker images
+build-dev:: ## Builds dev docker image
+build-prod:: ## Builds prod docker image
+build-nginx:: ## Builds nginx docker image
+build-%::
 	docker build \
-		-t ruwordnetview:dev \
-		-f docker/Dockerfile .
+		-t ruwordnetview:$* \
+		-f docker/$*/Dockerfile .
 
-dev:: docker-build ## Runs docker container for development
+build-all:: build-dev build-prod build-nginx ## Builds all docker images
+
+dev:: build-dev ## Runs docker container for development
 	docker run \
 		--network ruwordnet_default \
 		-v `pwd`:/opt/app \

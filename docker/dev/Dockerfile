@@ -17,12 +17,6 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
         unzip \
         wget
 
-# Install composer and symfony
-WORKDIR /tmp/installers
-COPY docker/bin/* ./
-RUN bash ./install_composer \
- && mv composer.phar /usr/local/bin/composer
-
 # Install PHP extensions and their dependencies
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
     apt-get update \
@@ -37,10 +31,12 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
  && docker-php-ext-install -j$(nproc) pdo_pgsql \
  && docker-php-ext-enable opcache
 
+COPY --from=composer:2.5.4 /usr/bin/composer /usr/local/bin/composer
+
 RUN useradd --create-home --shell /bin/bash developer \
  && echo "developer ALL = NOPASSWD : ALL" > /etc/sudoers.d/developer
 
-COPY docker/scripts/entrypoint /entrypoint
+COPY docker/dev/scripts/entrypoint /entrypoint
 
 WORKDIR /opt/app
 

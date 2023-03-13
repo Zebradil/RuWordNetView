@@ -8,3 +8,4 @@ vendor
 app/config/database.json
 var/cache/*
 /.php_cs.cache
+/.env
