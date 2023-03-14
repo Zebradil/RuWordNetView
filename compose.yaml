@@ -6,7 +6,7 @@ services:
     environment:
       - CERTBOT_EMAIL=${CERTBOT_EMAIL:?}
       - CERTBOT_AUTHENTICATOR=dns-cloudflare
-      - STAGING=1
+      - STAGING=0
     ports:
     - 80:80
     - 443:443
