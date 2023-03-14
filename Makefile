@@ -12,7 +12,6 @@ build-%::
 
 dev:: build-dev ## Runs docker container for development
 	docker run \
-		--network ruwordnet_default \
 		-v `pwd`:/opt/app \
 		-e DEV_UID=1000 \
 		-e DEV_GID=1000 \
