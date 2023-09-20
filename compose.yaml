@@ -22,7 +22,7 @@ services:
       - shared_web:/var/www/html/web:rw
 
   database:
-    image: postgres:15.2
+    image: postgres:15.4
     environment:
       # *Before* building the app image the corresponding values must also be
       # set in app/config/database.json
