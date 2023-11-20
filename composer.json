@@ -11,7 +11,7 @@
   ],
   "require": {
     "php": "^7.4",
-    "doctrine/dbal": "2.5.4",
+    "doctrine/dbal": "2.13.9",
     "monolog/monolog": "^1.17",
     "silex/silex": "v1.3.5",
     "symfony/config": "^3.2",
