@@ -3,13 +3,14 @@ services:
     # Has to be built beforehand.
     # See https://github.com/Zebradil/RuWordNetView/blob/master/Makefile
     image: ruwordnetview:nginx
+    restart: unless-stopped
     environment:
       - CERTBOT_EMAIL=${CERTBOT_EMAIL:?}
       - CERTBOT_AUTHENTICATOR=dns-cloudflare
       - STAGING=0
     ports:
-    - 80:80
-    - 443:443
+      - 80:80
+      - 443:443
     volumes:
       # Volume for nginx cache
       - nginx_cache:/var/cache/nginx:rw
@@ -18,11 +19,13 @@ services:
 
   app:
     image: ruwordnetview:prod
+    restart: unless-stopped
     volumes:
       - shared_web:/var/www/html/web:rw
 
   database:
     image: postgres:15.4
+    restart: unless-stopped
     environment:
       # *Before* building the app image the corresponding values must also be
       # set in app/config/database.json
