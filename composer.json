@@ -14,10 +14,10 @@
     "doctrine/dbal": "2.5.4",
     "monolog/monolog": "^1.17",
     "silex/silex": "v1.3.5",
-    "symfony/config": "^3.2",
-    "symfony/translation": "^3.2",
+    "symfony/config": "^7.0",
+    "symfony/translation": "^7.0",
     "symfony/twig-bridge": "^3.0",
-    "symfony/yaml": "^3.2",
+    "symfony/yaml": "^7.0",
     "twig/twig": "^1.24",
     "ext-json": "*",
     "ext-pdo": "*"
