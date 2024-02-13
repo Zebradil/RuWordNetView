@@ -24,7 +24,7 @@ services:
       - shared_web:/var/www/html/web:rw
 
   database:
-    image: postgres:15.4
+    image: postgres:16.2
     restart: unless-stopped
     environment:
       # *Before* building the app image the corresponding values must also be
