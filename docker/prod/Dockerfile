@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:experimental
-FROM php:7.4.33-fpm-bullseye
+FROM php:8.3.4-fpm-bullseye
 
 # Generate en_US.UTF-8 and ru_RU.UTF-8 locales
 RUN apt-get update \
