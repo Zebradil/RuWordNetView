@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:experimental
 
-FROM php:7.4.15-cli-buster
+FROM php:8.2.7-cli-buster
 
 # Ensure cache for apt packages is preserved in mounted volume
 RUN rm -f /etc/apt/apt.conf.d/docker-clean \

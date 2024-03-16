@@ -10,7 +10,7 @@
     }
   ],
   "require": {
-    "php": "^7.4",
+    "php": "^8.0",
     "doctrine/dbal": "2.5.4",
     "monolog/monolog": "^1.17",
     "silex/silex": "v1.3.5",
