@@ -13,7 +13,7 @@
     "php": "^7.4",
     "doctrine/dbal": "2.5.4",
     "monolog/monolog": "^1.17",
-    "silex/silex": "v1.3.5",
+    "silex/silex": "v1.3.6",
     "symfony/config": "^3.2",
     "symfony/translation": "^3.2",
     "symfony/twig-bridge": "^3.0",
