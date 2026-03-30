@@ -18,7 +18,7 @@
     "symfony/translation": "^3.2",
     "symfony/twig-bridge": "^3.0",
     "symfony/yaml": "^3.2",
-    "twig/twig": "^1.24",
+    "twig/twig": "^3.0",
     "ext-json": "*",
     "ext-pdo": "*"
   },
