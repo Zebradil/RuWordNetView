@@ -1,17 +1,12 @@
-# syntax=docker/dockerfile:experimental
+# syntax=docker/dockerfile:1
 
-FROM php:7.4.15-cli-buster
+FROM php:8.3-cli-bookworm
 
-# Ensure cache for apt packages is preserved in mounted volume
+# Ensure apt cache is preserved in mounted volumes
 RUN rm -f /etc/apt/apt.conf.d/docker-clean \
  && echo 'Binary::apt::APT::Keep-Downloaded-Packages "true";' > /etc/apt/apt.conf.d/keep-cache
 
-# Buster repos moved to archive.debian.org after EOL
-RUN sed -i 's|deb.debian.org|archive.debian.org|g; s|security.debian.org|archive.debian.org|g' /etc/apt/sources.list \
- && sed -i '/buster-updates/d' /etc/apt/sources.list \
- && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/10no-check-valid-until
-
-# Install basic tools
+# Install PHP extensions and their native dependencies
 RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
     apt-get update \
  && apt-get install -y --no-install-recommends \
@@ -20,20 +15,11 @@ RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/
         gosu \
         sudo \
         unzip \
-        wget
-
-# Install PHP extensions and their dependencies
-RUN --mount=type=cache,target=/var/cache/apt --mount=type=cache,target=/var/lib/apt \
-    apt-get update \
- && apt-get install -y --no-install-recommends \
+        wget \
         libzip-dev \
- && docker-php-ext-install -j$(nproc) zip \
- && apt-get install -y --no-install-recommends \
         libicu-dev \
- && docker-php-ext-install -j$(nproc) intl \
- && apt-get install -y --no-install-recommends \
         libpq-dev \
- && docker-php-ext-install -j$(nproc) pdo_pgsql \
+ && docker-php-ext-install -j$(nproc) zip intl pdo_pgsql \
  && docker-php-ext-enable opcache
 
 COPY --from=composer:2.9.7 /usr/bin/composer /usr/local/bin/composer

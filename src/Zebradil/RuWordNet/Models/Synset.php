@@ -2,7 +2,7 @@
 
 namespace Zebradil\RuWordNet\Models;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Zebradil\RuWordNet\Views\SynsetTemplateTrait;
 use Zebradil\SilexDoctrineDbalModelRepository\AbstractModel;
 
@@ -20,10 +20,10 @@ class Synset extends AbstractModel
     use ModelComparisonTrait;
 
     const FIELDS_CONFIG = [
-        'id' => ['type' => Type::TEXT],
-        'name' => ['type' => Type::TEXT],
-        'definition' => ['type' => Type::TEXT],
-        'part_of_speech' => ['type' => Type::TEXT],
+        'id' => ['type' => Types::TEXT],
+        'name' => ['type' => Types::TEXT],
+        'definition' => ['type' => Types::TEXT],
+        'part_of_speech' => ['type' => Types::TEXT],
     ];
 
     /** @var Sense[] */
