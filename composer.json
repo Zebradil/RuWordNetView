@@ -18,8 +18,8 @@
     "slim/twig-view": "^3",
     "php-di/php-di": "^7",
     "twig/twig": "^3",
-    "symfony/translation": "^7",
-    "symfony/yaml": "^7",
+    "symfony/translation": "^8",
+    "symfony/yaml": "^8",
     "ext-json": "*",
     "ext-pdo": "*",
     "ext-intl": "*"
