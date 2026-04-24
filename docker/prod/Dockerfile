@@ -22,8 +22,11 @@ COPY --from=composer:2.9.7 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+COPY --chown=www-data:www-data composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --prefer-dist --no-scripts --no-autoloader
+
 COPY --chown=www-data:www-data . .
 
-RUN composer install --no-dev --no-interaction --optimize-autoloader \
+RUN composer dump-autoload --optimize --no-dev --no-interaction \
  && mkdir -p var/log var/cache/twig \
  && chown -R www-data:www-data var/
