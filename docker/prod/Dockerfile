@@ -1,6 +1,10 @@
 # syntax=docker/dockerfile:experimental
 FROM php:7.4.33-fpm-bullseye
 
+# Bullseye repos heading toward archive after EOL
+RUN sed -i '/bullseye-security/d; s|deb.debian.org|archive.debian.org|g' /etc/apt/sources.list 2>/dev/null || true \
+ && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/10no-check-valid-until
+
 # Generate en_US.UTF-8 and ru_RU.UTF-8 locales
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
