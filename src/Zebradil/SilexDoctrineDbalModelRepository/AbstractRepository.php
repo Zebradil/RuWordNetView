@@ -102,7 +102,7 @@ abstract class AbstractRepository
      */
     public function find($condition): ?ModelInterface
     {
-        $row = $this->db->fetchAssoc(...$this->generateQuery($condition));
+        $row = $this->db->fetchAssociative(...$this->generateQuery($condition));
         if (false === $row) {
             return null;
         }
@@ -123,7 +123,7 @@ abstract class AbstractRepository
      */
     public function findAll($condition = null): array
     {
-        return $this->instantiateCollection($this->db->fetchAll(...$this->generateQuery($condition, false)));
+        return $this->instantiateCollection($this->db->fetchAllAssociative(...$this->generateQuery($condition, false)));
     }
 
     /**

@@ -2,7 +2,7 @@
 
 namespace Zebradil\SilexDoctrineDbalModelRepository;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use InvalidArgumentException;
 use LogicException;
 use UnexpectedValueException;
@@ -220,11 +220,13 @@ abstract class AbstractModel implements ModelInterface
                 }
             }
             switch ($cfg['type']) {
-                case Type::BOOLEAN:
+                case Types::BOOLEAN:
                     return (bool) $value;
-                case Type::INTEGER:
+                case Types::INTEGER:
+                case Types::SMALLINT:
                     return (int) $value;
-                case Type::STRING:
+                case Types::STRING:
+                case Types::TEXT:
                     return (string) $value;
                 default:
                     return $value;

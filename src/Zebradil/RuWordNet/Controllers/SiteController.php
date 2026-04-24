@@ -2,111 +2,54 @@
 
 namespace Zebradil\RuWordNet\Controllers;
 
+use Psr\Http\Message\ResponseInterface as Response;
+use Psr\Http\Message\ServerRequestInterface as Request;
 use Psr\Log\LoggerInterface;
-use Silex\Application;
-use Symfony\Component\HttpFoundation\Request;
-use Twig\Error\LoaderError;
-use Twig\Error\RuntimeError;
-use Twig\Error\SyntaxError;
-use Twig_Environment;
+use Slim\Views\Twig;
 use Zebradil\RuWordNet\Models\Sense;
 use Zebradil\RuWordNet\Repositories\SenseRepository;
 
-/**
- * Class SiteController.
- */
 class SiteController
 {
-    /** @var Twig_Environment */
-    private Twig_Environment $twig;
-    /** @var LoggerInterface */
-    private LoggerInterface $logger;
+    public function __construct(
+        private Twig $twig,
+        private LoggerInterface $logger,
+        private SenseRepository $senseRepository,
+    ) {}
 
-    /**
-     * SiteController constructor.
-     *
-     * @param Twig_Environment $twig
-     * @param LoggerInterface  $logger
-     */
-    public function __construct(Twig_Environment $twig, LoggerInterface $logger)
+    public function homepageAction(Request $request, Response $response, array $args): Response
     {
-        $this->twig = $twig;
-        $this->logger = $logger;
+        return $this->twig->render($response, 'Site/homepage.html.twig');
     }
 
-    /**
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     *
-     * @return string
-     */
-    public function homepageAction(): string
+    public function senseAction(Request $request, Response $response, array $args): Response
     {
-        return $this->twig->render('Site/homepage.html.twig');
+        $name    = trim(mb_strtoupper($args['name']));
+        $meaning = (int) ($args['meaning'] ?? 0);
+
+        $sense = $this->senseRepository->find(['name' => $name, 'meaning' => $meaning]);
+
+        return $this->twig->render($response, 'Site/lexeme_summary.html.twig', [
+            'searchString' => $args['name'],
+            'senses'       => $sense ? [$sense] : [],
+        ]);
     }
 
-    /**
-     * @param Application $app
-     * @param string      $name
-     * @param int         $meaning
-     *
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     *
-     * @return string
-     */
-    public function senseAction(Application $app, string $name, int $meaning): string
+    public function searchAction(Request $request, Response $response, array $args): Response
     {
-        $sense = $app['repository']
-            ->getFor(Sense::class)
-            ->find([
-                'name' => trim(mb_strtoupper($name)),
-                'meaning' => $meaning,
-            ])
-        ;
+        $searchString = trim(
+            $args['searchString'] ?? ($request->getQueryParams()['searchString'] ?? '')
+        );
 
-        $data = [
-            'searchString' => $name,
-            'senses' => $sense ? [$sense] : [],
-        ];
-
-        return $this->twig->render('Site/lexeme_summary.html.twig', $data);
-    }
-
-    /**
-     * @param Request     $request
-     * @param Application $app
-     *
-     * @throws LoaderError
-     * @throws RuntimeError
-     * @throws SyntaxError
-     *
-     * @return string
-     */
-    public function searchAction(Request $request, Application $app): string
-    {
-        $searchString = trim($request->get('searchString'));
-
-        if (empty($searchString)) {
-            $senses = [];
-        } else {
-            /** @var SenseRepository $senseRepository */
-            $senseRepository = $app['repository']->getFor(Sense::class);
-            /** @var Sense[] $senses */
-            $senses = $senseRepository->getByName($searchString);
-
-            usort($senses, function ($a, $b) {
-                return $a->meaning <=> $b->meaning;
-            });
+        $senses = [];
+        if ($searchString !== '') {
+            $senses = $this->senseRepository->getByName($searchString);
+            usort($senses, fn(Sense $a, Sense $b) => $a->meaning <=> $b->meaning);
         }
 
-        $data = [
+        return $this->twig->render($response, 'Site/lexeme_summary.html.twig', [
             'searchString' => $searchString,
-            'senses' => $senses,
-        ];
-
-        return $this->twig->render('Site/lexeme_summary.html.twig', $data);
+            'senses'       => $senses,
+        ]);
     }
 }

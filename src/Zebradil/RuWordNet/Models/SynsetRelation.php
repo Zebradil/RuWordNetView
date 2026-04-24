@@ -2,7 +2,7 @@
 
 namespace Zebradil\RuWordNet\Models;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Zebradil\SilexDoctrineDbalModelRepository\AbstractModel;
 
 /**
@@ -13,9 +13,9 @@ use Zebradil\SilexDoctrineDbalModelRepository\AbstractModel;
 class SynsetRelation extends AbstractModel
 {
     const FIELDS_CONFIG = [
-        'parent_id' => ['type' => Type::TEXT],
-        'child_id' => ['type' => Type::TEXT],
-        'name' => ['type' => Type::TEXT],
+        'parent_id' => ['type' => Types::TEXT],
+        'child_id' => ['type' => Types::TEXT],
+        'name' => ['type' => Types::TEXT],
     ];
 
     const TYPE_HYPERNYM = 'hypernym';

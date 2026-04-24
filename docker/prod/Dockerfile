@@ -1,9 +1,6 @@
-# syntax=docker/dockerfile:experimental
-FROM php:7.4.33-fpm-bullseye
+# syntax=docker/dockerfile:1
 
-# Bullseye repos heading toward archive after EOL
-RUN sed -i '/bullseye-security/d; s|deb.debian.org|archive.debian.org|g' /etc/apt/sources.list 2>/dev/null || true \
- && echo 'Acquire::Check-Valid-Until "false";' > /etc/apt/apt.conf.d/10no-check-valid-until
+FROM php:8.3-fpm-bookworm
 
 # Generate en_US.UTF-8 and ru_RU.UTF-8 locales
 RUN apt-get update \
@@ -16,16 +13,12 @@ RUN apt-get update \
 RUN apt-get update \
  && apt-get install -y --no-install-recommends \
         libzip-dev \
- && docker-php-ext-install -j$(nproc) zip \
- && apt-get install -y --no-install-recommends \
         libicu-dev \
- && docker-php-ext-install -j$(nproc) intl \
- && apt-get install -y --no-install-recommends \
         libpq-dev \
- && docker-php-ext-install -j$(nproc) pdo_pgsql \
+ && docker-php-ext-install -j$(nproc) zip intl pdo_pgsql \
  && docker-php-ext-enable opcache
 
-COPY --from=composer /usr/bin/composer /usr/bin/composer
+COPY --from=composer:2.9.7 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
@@ -34,4 +27,6 @@ RUN composer install --no-dev --no-interaction --prefer-dist --no-scripts --no-a
 
 COPY --chown=www-data:www-data . .
 
-RUN composer dump-autoload --optimize --no-dev --no-interaction
+RUN composer dump-autoload --optimize --no-dev --no-interaction \
+ && mkdir -p var/log var/cache/twig \
+ && chown -R www-data:www-data var/

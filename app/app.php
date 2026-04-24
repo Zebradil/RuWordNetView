@@ -1,13 +1,23 @@
 <?php
 
-use Silex\Application;
-use Silex\Provider\DoctrineServiceProvider;
-use Silex\Provider\MonologServiceProvider;
-use Silex\Provider\ServiceControllerServiceProvider;
-use Silex\Provider\TwigServiceProvider;
-use Silex\Provider\UrlGeneratorServiceProvider;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\HttpFoundation\Response;
+declare(strict_types=1);
+
+use DI\ContainerBuilder;
+use Doctrine\DBAL\Connection;
+use Doctrine\DBAL\DriverManager;
+use Monolog\Handler\RotatingFileHandler;
+use Monolog\Logger;
+use Psr\Container\ContainerInterface;
+use Psr\Log\LoggerInterface;
+use Slim\Exception\HttpNotFoundException;
+use Slim\Factory\AppFactory;
+use Slim\Psr7\Response;
+use Slim\Views\Twig;
+use Slim\Views\TwigMiddleware;
+use Symfony\Component\Translation\Loader\YamlFileLoader;
+use Symfony\Component\Translation\Translator;
+use Twig\TwigFilter;
+use Twig\TwigFunction;
 use Zebradil\RuWordNet\Controllers\SiteController;
 use Zebradil\RuWordNet\Models\Sense;
 use Zebradil\RuWordNet\Models\SenseRelation;
@@ -17,126 +27,150 @@ use Zebradil\RuWordNet\Repositories\SenseRelationRepository;
 use Zebradil\RuWordNet\Repositories\SenseRepository;
 use Zebradil\RuWordNet\Repositories\SynsetRelationRepository;
 use Zebradil\RuWordNet\Repositories\SynsetRepository;
-use Zebradil\SilexDoctrineDbalModelRepository\RepositoryServiceProvider;
+use Zebradil\SilexDoctrineDbalModelRepository\RepositoryFactoryService;
 
-require_once __DIR__.'/../vendor/autoload.php';
+require_once __DIR__ . '/../vendor/autoload.php';
 
-$app = new Application();
-
-$app['debug'] = false;
-
-// logging
-
-$app->register(new MonologServiceProvider(), [
-    'monolog.logfile' => __DIR__.'/../var/log/app.log',
-    'monolog.level'   => Monolog\Logger::INFO,
-]);
-$app['monolog.handler'] = function ($app) {
-    return new Monolog\Handler\RotatingFileHandler(
-        $app['monolog.logfile'], 7, $app['monolog.level']
-    );
-};
-
-// database
-$cfg = json_decode(file_get_contents(__DIR__.'/config/database.json'), true);
-if (null === $cfg
-    || !isset(
-        $cfg['driver'],
-        $cfg['dbname'],
-        $cfg['host'],
-        $cfg['port'],
-        $cfg['user'],
-        $cfg['password']
-    )
+// Load DB config (keep the same JSON format as before for zero-touch deploy)
+$cfgPath = __DIR__ . '/config/database.json';
+$cfg = json_decode(@file_get_contents($cfgPath) ?: '', true);
+if (!is_array($cfg)
+    || !array_key_exists('driver', $cfg)
+    || !array_key_exists('dbname', $cfg)
+    || !array_key_exists('host', $cfg)
+    || !array_key_exists('port', $cfg)
+    || !array_key_exists('user', $cfg)
+    || !array_key_exists('password', $cfg)
 ) {
-    // TODO Log this
-    echo 'Oops! Something wrong.';
-    exit;
-}
-$app->register(new DoctrineServiceProvider(), [
-    'db.options' => [
-        'driver' => $cfg['driver'],
-        'dbname' => $cfg['dbname'],
-        'host' => $cfg['host'],
-        'port' => $cfg['port'],
-        'user' => $cfg['user'],
-        'password' => $cfg['password'],
-    ],
-]);
-
-if ($app['debug']) {
-    $logger = new Doctrine\DBAL\Logging\DebugStack();
-    $app['db.config']->setSQLLogger($logger);
-    $app->error(function (Exception $e, $code) use ($app, $logger) {
-        if ($e instanceof PDOException && count($logger->queries)) {
-            // We want to log the query as an ERROR for PDO exceptions!
-            $query = array_pop($logger->queries);
-            $app['monolog']->err($query['sql'], [
-                'params' => $query['params'],
-                'types' => $query['types'],
-            ]);
-        }
-    });
-    $app->after(function (Request $request, Response $response) use ($app, $logger) {
-        // Log all queries as DEBUG.
-        foreach ($logger->queries as $query) {
-            $app['monolog']->debug($query['sql'], [
-                'params' => $query['params'],
-                'types' => $query['types'],
-            ]);
-        }
-    });
+    throw new RuntimeException("Invalid or missing database configuration at {$cfgPath}");
 }
 
-// repositories
+// Mutable per-request context exposed to all Twig templates as {{ app.locale }} etc.
+$requestCtx = new stdClass();
+$requestCtx->locale      = 'ru';
+$requestCtx->route_name  = 'homepage';
+$requestCtx->route_params = [];
 
-$app->register(new RepositoryServiceProvider(), [
-    'repository.repositories' => [
-        Sense::class => SenseRepository::class,
-        Synset::class => SynsetRepository::class,
-        SenseRelation::class => SenseRelationRepository::class,
-        SynsetRelation::class => SynsetRelationRepository::class,
-    ],
-]);
+$containerBuilder = new ContainerBuilder();
+$containerBuilder->addDefinitions([
 
-// controllers
+    LoggerInterface::class => function (): LoggerInterface {
+        $logger = new Logger('app');
+        $logger->pushHandler(new RotatingFileHandler(
+            __DIR__ . '/../var/log/app.log',
+            7,
+            Logger::INFO,
+        ));
+        return $logger;
+    },
 
-$app->register(new ServiceControllerServiceProvider());
+    Connection::class => function () use ($cfg): Connection {
+        return DriverManager::getConnection([
+            'driver'   => $cfg['driver'],
+            'dbname'   => $cfg['dbname'],
+            'host'     => $cfg['host'],
+            'port'     => (int) $cfg['port'],
+            'user'     => $cfg['user'],
+            'password' => $cfg['password'],
+        ]);
+    },
 
-$app['site.controller'] = $app->share(function () use ($app) {
-    return new SiteController($app['twig'], $app['monolog']);
-});
+    RepositoryFactoryService::class => function (ContainerInterface $c): RepositoryFactoryService {
+        return new RepositoryFactoryService($c->get(Connection::class), [
+            Sense::class         => SenseRepository::class,
+            Synset::class        => SynsetRepository::class,
+            SenseRelation::class => SenseRelationRepository::class,
+            SynsetRelation::class => SynsetRelationRepository::class,
+        ]);
+    },
 
-// templates
+    SenseRepository::class => function (ContainerInterface $c): SenseRepository {
+        /** @var SenseRepository */
+        return $c->get(RepositoryFactoryService::class)->getFor(Sense::class);
+    },
 
-$app->register(new TwigServiceProvider(), [
-    'twig.path' => __DIR__.'/../views',
-    'twig.strict_variables' => false,
-    'twig.options' => [
-        'cache' => __DIR__.'/../var/cache/twig',
-    ],
-]);
+    Translator::class => function (): Translator {
+        $translator = new Translator('ru');
+        $translator->setFallbackLocales(['en']);
+        $translator->addLoader('yaml', new YamlFileLoader());
+        $translator->addResource('yaml', __DIR__ . '/locales/en.yml', 'en');
+        $translator->addResource('yaml', __DIR__ . '/locales/ru.yml', 'ru');
+        return $translator;
+    },
 
-$app->extend('twig', function ($twig, $app) {
-    $tr = Transliterator::create('Cyrillic-Latin');
-    $twig->addFilter(
-        'translit',
-        new \Twig_Filter_Function(
-            function ($string) use ($tr) {
-                return $tr->transliterate($string);
+    Twig::class => function (ContainerInterface $c) use ($requestCtx): Twig {
+        $twig = Twig::create(__DIR__ . '/../views', [
+            'cache'            => __DIR__ . '/../var/cache/twig',
+            'strict_variables' => false,
+        ]);
+        $env = $twig->getEnvironment();
+
+        // Per-request context: accessible in all templates as {{ app.locale }},
+        // {{ app.route_name }}, {{ app.route_params }}. Mutated by locale middleware.
+        $env->addGlobal('app', $requestCtx);
+
+        // Cyrillic → Latin transliteration filter
+        $tr = Transliterator::create('Cyrillic-Latin');
+        $env->addFilter(new TwigFilter('translit', fn(string $s): string => $tr->transliterate($s)));
+
+        // Translation filter: {{ 'key'|trans }} or {{ 'key'|trans({'%p%': val}) }}
+        $translator = $c->get(Translator::class);
+        $env->addFilter(new TwigFilter('trans',
+            fn(string $id, array $params = [], ?string $domain = null): string =>
+                $translator->trans($id, $params, $domain)
+        ));
+
+        // path(routeName, data) — like Symfony's path(), auto-injects _locale, delegates
+        // to slim/twig-view's TwigRuntime (available after TwigMiddleware runs).
+        $env->addFunction(new TwigFunction('path',
+            function (string $routeName, array $data = [], array $queryParams = []) use ($env, $requestCtx): string {
+                if (!isset($data['_locale'])) {
+                    $data['_locale'] = $requestCtx->locale;
+                }
+                $data = array_map('strval', $data);
+                return $env->getRuntime(\Slim\Views\TwigRuntime::class)->urlFor($routeName, $data, $queryParams);
             }
-        )
-    );
+        ));
 
-    return $twig;
-});
+        return $twig;
+    },
 
-include 'translation.php';
+    SiteController::class => function (ContainerInterface $c): SiteController {
+        return new SiteController(
+            $c->get(Twig::class),
+            $c->get(LoggerInterface::class),
+            $c->get(SenseRepository::class),
+        );
+    },
 
-// URL generator
+    // Expose the shared mutable context object for use in middleware
+    'requestContext' => fn() => $requestCtx,
+]);
 
-$app->register(new UrlGeneratorServiceProvider());
+$container = $containerBuilder->build();
+AppFactory::setContainer($container);
+$app = AppFactory::create();
 
-include 'routing.php';
+// TwigMiddleware registers the url_for() runtime per request (must come before routes)
+$app->add(TwigMiddleware::createFromContainer($app, Twig::class));
+
+// Routing addBodyParsing is not needed (all GETs), but routing middleware is required
+$app->addRoutingMiddleware();
+
+$debug = (bool) getenv('APP_DEBUG');
+$errorMiddleware = $app->addErrorMiddleware($debug, true, true);
+
+// Custom 404 → render the 404 template
+$errorMiddleware->setErrorHandler(
+    HttpNotFoundException::class,
+    function ($request, $exception) use ($container): Response {
+        $twig     = $container->get(Twig::class);
+        $response = new Response(404);
+        return $twig->render($response, 'Site/404.html.twig');
+    },
+    true,
+);
+
+require __DIR__ . '/routing.php';
 
 return $app;

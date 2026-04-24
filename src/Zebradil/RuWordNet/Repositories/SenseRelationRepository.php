@@ -6,9 +6,6 @@ use Zebradil\RuWordNet\Models\Sense;
 use Zebradil\RuWordNet\Models\SenseRelation;
 use Zebradil\SilexDoctrineDbalModelRepository\AbstractRepository;
 
-/**
- * Class SenseRelationRepository.
- */
 class SenseRelationRepository extends AbstractRepository
 {
     const TABLE_NAME = 'sense_relations';
@@ -16,18 +13,17 @@ class SenseRelationRepository extends AbstractRepository
     const PRIMARY_KEY = ['parent_id', 'child_id', 'name'];
 
     /**
-     * @param Sense $sense
-     *
      * @return SenseRelation[]
      */
     public function findAllForSense(Sense $sense): array
     {
         $builder = $this->db->createQueryBuilder()
-            ->select(SenseRelation::getFields())
+            ->select(...SenseRelation::getFields())
             ->from(static::TABLE_NAME, 't')
             ->where("parent_id = :id AND info <> 'deleted'")
+            ->setParameter('id', $sense->id)
         ;
 
-        return $this->instantiateCollection($this->db->fetchAll($builder, ['id' => $sense->id]));
+        return $this->instantiateCollection($builder->executeQuery()->fetchAllAssociative());
     }
 }

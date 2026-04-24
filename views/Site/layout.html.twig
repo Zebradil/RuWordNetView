@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="{{ app.translator.locale }}">
+<html lang="{{ app.locale }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width">
@@ -46,14 +46,12 @@
                 }
             </script>
             <div id="flag-box">
-                {% set route = app.request.get('_route')|default('homepage') %}
-                {% set params = app.request.get('_route_params')|default({}) %}
-                {% if app.translator.locale == 'ru' %}
-                    <a href="{{ path(route, params|merge({'_locale': 'en'})) }}" title="English version">
+                {% if app.locale == 'ru' %}
+                    <a href="{{ path(app.route_name, app.route_params|merge({'_locale': 'en'})) }}" title="English version">
                         <span class="flag">&#x1F1EC;&#x1F1E7;</span>
                     </a>
                 {% else %}
-                    <a href="{{ path(route, params|merge({'_locale': 'ru'})) }}" title="Версия на Русском">
+                    <a href="{{ path(app.route_name, app.route_params|merge({'_locale': 'ru'})) }}" title="Версия на Русском">
                         <span class="flag">&#x1F1F7;&#x1F1FA;</span>
                     </a>
                 {% endif %}

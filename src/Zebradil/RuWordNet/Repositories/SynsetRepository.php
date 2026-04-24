@@ -5,9 +5,6 @@ namespace Zebradil\RuWordNet\Repositories;
 use Zebradil\RuWordNet\Models\Synset;
 use Zebradil\SilexDoctrineDbalModelRepository\AbstractRepository;
 
-/**
- * Class SenseRepository.
- */
 class SynsetRepository extends AbstractRepository
 {
     const TABLE_NAME = 'synsets';
@@ -15,8 +12,6 @@ class SynsetRepository extends AbstractRepository
     const PRIMARY_KEY = ['id'];
 
     /**
-     * @param Synset $synset Synset object
-     *
      * @return string[][] ILI relations data
      */
     public function getIliRelationsForSynset(Synset $synset): array
@@ -57,21 +52,18 @@ class SynsetRepository extends AbstractRepository
          * s   Adj  ADJECTIVE SATELLITE
          * r   -    ADVERB
          */
-        if ('Adj' === $synset->part_of_speech) {
-            $partOfSpeech = 'as';
-        } else {
-            $partOfSpeech = mb_strtolower($synset->part_of_speech);
-        }
+        $partOfSpeech = 'Adj' === $synset->part_of_speech
+            ? 'as'
+            : mb_strtolower($synset->part_of_speech);
 
-        $params = [
-            'conceptName' => mb_strtoupper($synset->name),
+        $rows = $this->db->fetchAllAssociative($sql, [
+            'conceptName'  => mb_strtoupper($synset->name),
             'partOfSpeech' => $partOfSpeech,
-        ];
+        ]);
 
         return array_map(function (array $row) {
             $row['lemma_names'] = json_decode($row['lemma_names'], true);
-
             return $row;
-        }, $this->db->fetchAll($sql, $params));
+        }, $rows);
     }
 }

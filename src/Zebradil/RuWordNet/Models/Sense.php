@@ -2,7 +2,7 @@
 
 namespace Zebradil\RuWordNet\Models;
 
-use Doctrine\DBAL\Types\Type;
+use Doctrine\DBAL\Types\Types;
 use Zebradil\RuWordNet\Views\SenseTemplateTrait;
 use Zebradil\SilexDoctrineDbalModelRepository\AbstractModel;
 
@@ -22,12 +22,12 @@ class Sense extends AbstractModel
     use ModelComparisonTrait;
 
     const FIELDS_CONFIG = [
-        'id' => ['type' => Type::TEXT],
-        'synset_id' => ['type' => Type::TEXT],
-        'name' => ['type' => Type::TEXT],
-        'lemma' => ['type' => Type::TEXT],
-        'synt_type' => ['type' => Type::TEXT],
-        'meaning' => ['type' => Type::SMALLINT],
+        'id' => ['type' => Types::TEXT],
+        'synset_id' => ['type' => Types::TEXT],
+        'name' => ['type' => Types::TEXT],
+        'lemma' => ['type' => Types::TEXT],
+        'synt_type' => ['type' => Types::TEXT],
+        'meaning' => ['type' => Types::SMALLINT],
     ];
 
     private ?array $_relations = null;
