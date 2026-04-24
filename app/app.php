@@ -28,8 +28,14 @@ $app['debug'] = false;
 // logging
 
 $app->register(new MonologServiceProvider(), [
-    'monolog.logfile' => __DIR__.'/../var/log/development.log',
+    'monolog.logfile' => __DIR__.'/../var/log/app.log',
+    'monolog.level'   => Monolog\Logger::INFO,
 ]);
+$app['monolog.handler'] = function ($app) {
+    return new Monolog\Handler\RotatingFileHandler(
+        $app['monolog.logfile'], 7, $app['monolog.level']
+    );
+};
 
 // database
 $cfg = json_decode(file_get_contents(__DIR__.'/config/database.json'), true);

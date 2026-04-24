@@ -1,9 +1,16 @@
+x-logging: &default-logging
+  driver: json-file
+  options:
+    max-size: "10m"
+    max-file: "3"
+
 services:
   proxy:
     # Has to be built beforehand.
     # See https://github.com/Zebradil/RuWordNetView/blob/master/Makefile
     image: ruwordnetview:nginx
     restart: unless-stopped
+    logging: *default-logging
     environment:
       - CERTBOT_EMAIL=${CERTBOT_EMAIL:?}
       - CERTBOT_AUTHENTICATOR=dns-cloudflare
@@ -20,12 +27,14 @@ services:
   app:
     image: ruwordnetview:prod
     restart: unless-stopped
+    logging: *default-logging
     volumes:
       - shared_web:/var/www/html/web:rw
 
   database:
     image: postgres:15.4
     restart: unless-stopped
+    logging: *default-logging
     environment:
       # *Before* building the app image the corresponding values must also be
       # set in app/config/database.json
