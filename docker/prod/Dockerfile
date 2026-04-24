@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.3-fpm-bookworm
+FROM php:8.5-fpm-bookworm
 
 # Generate en_US.UTF-8 and ru_RU.UTF-8 locales
 RUN apt-get update \

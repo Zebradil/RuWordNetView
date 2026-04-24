@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-FROM php:8.3-cli-bookworm
+FROM php:8.5-cli-bookworm
 
 # Ensure apt cache is preserved in mounted volumes
 RUN rm -f /etc/apt/apt.conf.d/docker-clean \
