@@ -29,7 +29,9 @@ COPY --from=composer /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
+COPY --chown=www-data:www-data composer.json composer.lock ./
+RUN composer install --no-dev --no-interaction --prefer-dist --no-scripts --no-autoloader
+
 COPY --chown=www-data:www-data . .
 
-
-
+RUN composer dump-autoload --optimize --no-dev --no-interaction
