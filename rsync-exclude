@@ -5,5 +5,4 @@ rsync-exclude
 .realsync
 .sass-cache
 var/*
-app/config/database.json
 

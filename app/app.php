@@ -31,19 +31,20 @@ use Zebradil\SilexDoctrineDbalModelRepository\RepositoryFactoryService;
 
 require_once __DIR__ . '/../vendor/autoload.php';
 
-// Load DB config (keep the same JSON format as before for zero-touch deploy)
-$cfgPath = __DIR__ . '/config/database.json';
-$cfg = json_decode(@file_get_contents($cfgPath) ?: '', true);
-if (!is_array($cfg)
-    || !array_key_exists('driver', $cfg)
-    || !array_key_exists('dbname', $cfg)
-    || !array_key_exists('host', $cfg)
-    || !array_key_exists('port', $cfg)
-    || !array_key_exists('user', $cfg)
-    || !array_key_exists('password', $cfg)
-) {
-    throw new RuntimeException("Invalid or missing database configuration at {$cfgPath}");
+$missing = array_filter(
+    ['POSTGRES_HOST', 'POSTGRES_DB', 'POSTGRES_USER', 'POSTGRES_PASSWORD'],
+    fn(string $v): bool => getenv($v) === false,
+);
+if ($missing) {
+    throw new RuntimeException('Missing required env vars: ' . implode(', ', $missing));
 }
+$cfg = [
+    'host'     => (string) getenv('POSTGRES_HOST'),
+    'port'     => (int) (getenv('POSTGRES_PORT') ?: 5432),
+    'dbname'   => (string) getenv('POSTGRES_DB'),
+    'user'     => (string) getenv('POSTGRES_USER'),
+    'password' => (string) getenv('POSTGRES_PASSWORD'),
+];
 
 // Mutable per-request context exposed to all Twig templates as {{ app.locale }} etc.
 $requestCtx = new stdClass();
@@ -65,14 +66,7 @@ $containerBuilder->addDefinitions([
     },
 
     Connection::class => function () use ($cfg): Connection {
-        return DriverManager::getConnection([
-            'driver'   => $cfg['driver'],
-            'dbname'   => $cfg['dbname'],
-            'host'     => $cfg['host'],
-            'port'     => (int) $cfg['port'],
-            'user'     => $cfg['user'],
-            'password' => $cfg['password'],
-        ]);
+        return DriverManager::getConnection(['driver' => 'pdo_pgsql'] + $cfg);
     },
 
     RepositoryFactoryService::class => function (ContainerInterface $c): RepositoryFactoryService {
