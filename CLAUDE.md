@@ -20,8 +20,6 @@ All common workflows are driven through the Makefile. Run `make help` for the au
 - Production stack: `docker compose up` uses `compose.yaml` (nginx proxy + app + postgres:15.17). Requires `.env` populated from `.env.dist`. The `app` service reads DB from `POSTGRES_*` env vars.
 - CI: GitHub Actions (`.github/workflows/ci.yml`) runs `go vet`, `gofmt` check, and Docker build on every push/PR.
 
-Go commands need `GOFLAGS=-mod=mod` (or `-mod=mod` flag) because the PHP `vendor/` directory exists during the transition. This is set in `Makefile`. Once PHP files are cleaned up, run `go mod vendor` or remove the flag.
-
 First-time local setup:
 1. Export `POSTGRES_HOST`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` (`POSTGRES_PORT` defaults to `5432`).
 2. Run `make dev` — the app serves on `:8000`.
@@ -63,7 +61,7 @@ views/
 app/locales/
   ru.yml                 Russian translations (flat key: value)
   en.yml                 English translations
-views/Site/parts/translations/
+views/parts/translations/
   homepage_text.ru.html  Locale-specific homepage body (raw HTML, trusted)
   homepage_text.en.html
 web/static/              CSS, images — served directly by Go's net/http
@@ -88,7 +86,7 @@ LexemeView
 
 ## Conventions and gotchas
 
-- Go 1.26. No CGO. `GOFLAGS=-mod=mod` is required while `vendor/` (PHP composer) exists.
+- Go 1.26. No CGO.
 - Locale is URL-only. No cookies, no sessions. Root `/` always redirects to `/ru/`.
 - `path(locale, routeName, params)` — for locale switching, the current page passes `RouteParams` (a `map[string]interface{}`) to the path function directly. The path function accepts both `map[string]interface{}` and `map[string]string`.
 - Sense names in the DB are stored UPPERCASE. `GetByName` and `GetByNameAndMeaning` call `strings.ToUpper` before querying.

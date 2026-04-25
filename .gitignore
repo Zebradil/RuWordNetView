@@ -1,12 +1,8 @@
 *~
 node_modules/
-.realsync
 .idea
 .sass-cache
-vendor
+vendor/
 *.log
 *.dump
-var/cache/*
-/.php_cs.cache
 /.env
-/.env.local

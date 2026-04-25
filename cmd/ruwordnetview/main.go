@@ -75,7 +75,7 @@ func main() {
 // loadLocaleTexts reads the homepage locale-specific HTML files from
 // views/parts/translations/homepage_text.{locale}.html
 func loadLocaleTexts(viewsDir string) (map[string]string, error) {
-	pattern := filepath.Join(viewsDir, "Site", "parts", "translations", "homepage_text.*.html")
+	pattern := filepath.Join(viewsDir, "parts", "translations", "homepage_text.*.html")
 	files, err := filepath.Glob(pattern)
 	if err != nil {
 		return nil, err

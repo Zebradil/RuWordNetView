@@ -1,8 +1,5 @@
 include .bootstrap.mk
 
-# Go flags to ignore the PHP composer vendor/ directory until it is removed.
-export GOFLAGS := -mod=mod
-
 build:: build-prod build-nginx ## Builds prod and nginx docker images
 
 build-prod:: ## Builds prod docker image
