@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-Web interface for the RuWordNet Russian thesaurus database. Go 1.23 app using **chi** router, `html/template` for rendering, **pgx/v5** for PostgreSQL access, and stdlib `log/slog`. Localized (ru/en) under `/{locale}/...` — locale is URL-only, no cookies or sessions.
+Web interface for the RuWordNet Russian thesaurus database. Go 1.26 app using **chi** router, `html/template` for rendering, **pgx/v5** for PostgreSQL access, and stdlib `log/slog`. Localized (ru/en) under `/{locale}/...` — locale is URL-only, no cookies or sessions.
 
 ## Commands
 
@@ -88,7 +88,7 @@ LexemeView
 
 ## Conventions and gotchas
 
-- Go 1.23. No CGO. `GOFLAGS=-mod=mod` is required while `vendor/` (PHP composer) exists.
+- Go 1.26. No CGO. `GOFLAGS=-mod=mod` is required while `vendor/` (PHP composer) exists.
 - Locale is URL-only. No cookies, no sessions. Root `/` always redirects to `/ru/`.
 - `path(locale, routeName, params)` — for locale switching, the current page passes `RouteParams` (a `map[string]interface{}`) to the path function directly. The path function accepts both `map[string]interface{}` and `map[string]string`.
 - Sense names in the DB are stored UPPERCASE. `GetByName` and `GetByNameAndMeaning` call `strings.ToUpper` before querying.
