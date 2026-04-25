@@ -14,6 +14,7 @@ abstract class AbstractModel implements ModelInterface
 {
     const FIELDS_CONFIG = [];
     protected static array $_fields_defaults = [];
+    protected array $_fields = [];
     protected bool $_isExists = false;
     protected bool $_loadAfterSave = false;
     /**
@@ -43,11 +44,18 @@ abstract class AbstractModel implements ModelInterface
         }
     }
 
+    public function __get(string $name)
+    {
+        if (!isset(static::FIELDS_CONFIG[$name])) {
+            throw new InvalidArgumentException("Обращение к непубличному свойству «{$name}»");
+        }
+
+        return $this->_fields[$name] ?? null;
+    }
+
     public function __isset($name): bool
     {
-        $cfg = static::FIELDS_CONFIG;
-
-        return isset($cfg[$name]);
+        return isset(static::FIELDS_CONFIG[$name]) && array_key_exists($name, $this->_fields);
     }
 
     /** {@inheritdoc} */
@@ -57,7 +65,7 @@ abstract class AbstractModel implements ModelInterface
         if (!isset($cfg[$name])) {
             throw new InvalidArgumentException("Попытка присвоения значения непубличному свойству «{$name}»");
         }
-        $this->{$name} = $this->cast($name, $value);
+        $this->_fields[$name] = $this->cast($name, $value);
     }
 
     /** {@inheritdoc} */
@@ -67,7 +75,7 @@ abstract class AbstractModel implements ModelInterface
         $cfg = static::FIELDS_CONFIG;
         foreach ($data as $k => $v) {
             if (isset($cfg[$k])) {
-                $this->{$k} = $this->cast($k, $v, !$decode);
+                $this->_fields[$k] = $this->cast($k, $v, !$decode);
             }
         }
 
@@ -124,7 +132,7 @@ abstract class AbstractModel implements ModelInterface
         $modelFields = static::getFields();
         $fields = $fields ? array_intersect($modelFields, $fields) : $modelFields;
         foreach ($fields as $field) {
-            $data[$field] = $this->{$field};
+            $data[$field] = $this->_fields[$field] ?? null;
         }
 
         return $encode ? $this->encodeData($data) : $data;
