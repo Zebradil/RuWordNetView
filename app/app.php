@@ -128,7 +128,7 @@ $containerBuilder->addDefinitions([
                     $data['_locale'] = $requestCtx->locale;
                 }
                 $data = array_map('strval', $data);
-                return $env->getRuntime(\Slim\Views\TwigRuntime::class)->urlFor($routeName, $data, $queryParams);
+                return $env->getRuntime(\Slim\Views\TwigRuntimeExtension::class)->urlFor($routeName, $data, $queryParams);
             }
         ));
 
