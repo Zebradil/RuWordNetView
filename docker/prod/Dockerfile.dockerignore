@@ -1,8 +1,8 @@
 *
-!composer.lock
-!composer.json
-!app
-!src
-!var
+!go.mod
+!go.sum
+!cmd
+!internal
+!app/locales
 !views
 !web

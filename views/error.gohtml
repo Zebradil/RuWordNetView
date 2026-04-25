@@ -1,0 +1,9 @@
+{{define "content"}}
+    <div id="page404">
+        {{if .ErrorMsg}}
+            {{.ErrorMsg}}
+        {{else}}
+            {{safeHTML (trans .Locale "something_went_wrong")}}
+        {{end}}
+    </div>
+{{end}}

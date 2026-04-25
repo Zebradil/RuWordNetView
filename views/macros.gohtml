@@ -1,0 +1,19 @@
+{{define "senseList"}}
+<div class="sense-list">
+    {{$locale := index . "Locale"}}
+    {{$current := index . "Current"}}
+    {{$tail := index . "Tail"}}
+    {{$senses := index . "Senses"}}
+    {{range $i, $s := $senses}}
+        <div class="sense">
+            {{- if and $current (eq $s.ID $current.ID)}}
+                <strong>{{$s.Name}}</strong>
+            {{- else}}
+                <a href="{{path $locale "sense" (dict "name" $s.Name "meaning" (itoa $s.Meaning))}}">{{- $s.Name -}}</a>
+            {{- end -}}
+            {{- if not (last $i $senses)}},{{end}}
+        </div>
+    {{end}}
+    {{if $tail}}<div class="tail">{{$tail}}</div>{{end}}
+</div>
+{{end}}
