@@ -1,2 +1,4 @@
 *
+!composer.json
+!composer.lock
 !docker/dev

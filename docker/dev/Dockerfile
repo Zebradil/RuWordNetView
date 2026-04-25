@@ -31,6 +31,11 @@ COPY docker/dev/scripts/entrypoint /entrypoint
 
 WORKDIR /opt/app
 
+COPY --chown=developer:developer composer.json composer.lock ./
+RUN composer install --no-interaction --prefer-dist --no-scripts --no-autoloader \
+ && composer dump-autoload --optimize --no-interaction \
+ && chown -R developer:developer /opt/app
+
 EXPOSE 8000
 
 ENTRYPOINT [ "/bin/bash", "/entrypoint"]
