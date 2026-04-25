@@ -122,22 +122,22 @@ func (r *Repo) BuildLexemeView(ctx context.Context, senses []Sense) (*LexemeView
 		return nil, err
 	}
 
+	// Single batched ILI query (replaces the per-synset loop that caused N round trips).
+	iliByKey, err := r.buildILIBatch(ctx, synsets)
+	if err != nil {
+		return nil, err
+	}
+
 	details := make([]SenseDetail, 0, len(senses))
 	for _, s := range senses {
 		syn := synsets[s.SynsetID]
-
-		iliRels, err := r.queryILIRelations(ctx, syn)
-		if err != nil {
-			return nil, err
-		}
-
 		detail := SenseDetail{
 			Sense:           s,
 			Synset:          syn,
 			SynsetSenses:    synsetSenses[s.SynsetID],
-			SenseRelations:  groupSenseRelations(s.ID, senseRels, synsets),
+			SenseRelations:  groupSenseRelations(s.ID, senseRels),
 			SynsetRelations: groupSynsetRelations(s.SynsetID, synsetRels, targetSynsets, targetSenses),
-			ILIRelations:    iliRels,
+			ILIRelations:    iliByKey[s.SynsetID],
 		}
 		details = append(details, detail)
 	}
@@ -232,61 +232,95 @@ func (r *Repo) querySenseRelations(ctx context.Context, senseIDs []string) (map[
 	return result, rows.Err()
 }
 
+// querySynsetRelations fetches synset→synset relations and the child synsets.
+// Uses two focused queries instead of a three-way join to avoid row fan-out when
+// child synsets have many senses.
 func (r *Repo) querySynsetRelations(ctx context.Context, synsetIDs []string) (
 	map[string][]synsetRel, map[string]Synset, map[string][]Sense, error,
 ) {
-	const q = `
+	// Query 1: relations + child synset metadata (no senses, no fan-out).
+	const qRels = `
 		SELECT sr.parent_id, sr.name AS rel_name,
-		       y.id, y.name, y.definition, y.part_of_speech,
-		       cs.id, cs.synset_id, cs.name, cs.lemma, cs.synt_type, cs.meaning
+		       y.id, y.name, y.definition, y.part_of_speech
 		FROM synset_relations sr
 		JOIN synsets y ON y.id = sr.child_id
-		JOIN senses cs ON cs.synset_id = y.id
 		WHERE sr.parent_id = ANY($1)
-		ORDER BY sr.parent_id, sr.name, y.id, cs.name`
-	rows, err := r.pool.Query(ctx, q, synsetIDs)
+		ORDER BY sr.parent_id, sr.name, y.id`
+	rows, err := r.pool.Query(ctx, qRels, synsetIDs)
 	if err != nil {
-		return nil, nil, nil, fmt.Errorf("querySynsetRelations: %w", err)
+		return nil, nil, nil, fmt.Errorf("querySynsetRelations/rels: %w", err)
 	}
-	defer rows.Close()
 
 	rels := make(map[string][]synsetRel)
 	synsets := make(map[string]Synset)
-	senses := make(map[string][]Sense)
+	childIDs := make([]string, 0)
+	seen := make(map[string]bool)
 
-	seen := make(map[string]bool) // deduplicate synset_relations rows per (parentID, relName, childID)
 	for rows.Next() {
 		var (
 			parentID, relName string
 			y                 Synset
-			cs                Sense
 			def               *string
 		)
-		if err := rows.Scan(
-			&parentID, &relName,
-			&y.ID, &y.Name, &def, &y.PartOfSpeech,
-			&cs.ID, &cs.SynsetID, &cs.Name, &cs.Lemma, &cs.SyntType, &cs.Meaning,
-		); err != nil {
+		if err := rows.Scan(&parentID, &relName, &y.ID, &y.Name, &def, &y.PartOfSpeech); err != nil {
+			rows.Close()
 			return nil, nil, nil, err
 		}
 		if def != nil {
 			y.Definition = *def
 		}
 		synsets[y.ID] = y
-		senses[y.ID] = append(senses[y.ID], cs)
 
 		key := parentID + "|" + relName + "|" + y.ID
 		if !seen[key] {
 			seen[key] = true
 			rels[parentID] = append(rels[parentID], synsetRel{parentID: parentID, relName: relName, childID: y.ID})
+			childIDs = append(childIDs, y.ID)
 		}
 	}
-	return rels, synsets, senses, rows.Err()
+	rows.Close()
+	if err := rows.Err(); err != nil {
+		return nil, nil, nil, err
+	}
+
+	if len(childIDs) == 0 {
+		return rels, synsets, nil, nil
+	}
+
+	// Query 2: senses for child synsets only.
+	senses, err := r.querySynsetSenses(ctx, childIDs)
+	if err != nil {
+		return nil, nil, nil, fmt.Errorf("querySynsetRelations/senses: %w", err)
+	}
+	return rels, synsets, senses, nil
 }
 
-func (r *Repo) queryILIRelations(ctx context.Context, syn Synset) ([]ILIRelation, error) {
+// buildILIBatch fetches ILI data for all synsets in one query.
+// Returns a map keyed by synset_id.
+func (r *Repo) buildILIBatch(ctx context.Context, synsets map[string]Synset) (map[string][]ILIRelation, error) {
+	if len(synsets) == 0 {
+		return nil, nil
+	}
+
+	names := make([]string, 0, len(synsets))
+	posSet := make(map[string]struct{})
+	for _, syn := range synsets {
+		names = append(names, strings.ToUpper(syn.Name))
+		for _, ch := range iliPOS(syn.PartOfSpeech) {
+			posSet[string(ch)] = struct{}{}
+		}
+	}
+	posChars := make([]string, 0, len(posSet))
+	for ch := range posSet {
+		posChars = append(posChars, ch)
+	}
+
+	// concept_id filter is pushed into both UNION branches so the planner can use
+	// the PK (concept_id, wn_id, source) instead of scanning all approved rows.
 	const q = `
 		SELECT
+		    c.name,
+		    right(ili.wn_id, 1) AS pos_char,
 		    m.ili,
 		    d.id,
 		    d.name,
@@ -296,13 +330,15 @@ func (r *Repo) queryILIRelations(ctx context.Context, syn Synset) ([]ILIRelation
 		    JOIN (
 		        SELECT concept_id, wn_id
 		        FROM ili
-		        WHERE source != 'manual'
+		        WHERE concept_id = ANY(SELECT id FROM concepts WHERE name = ANY($1))
+		          AND source != 'manual'
 		          AND approved
 		        UNION
-		        SELECT concept_id, wm.wn30
+		        SELECT ili.concept_id, wm.wn30
 		        FROM ili
 		            JOIN wn_mapping wm ON wm.wn31 = ili.wn_id
-		        WHERE source = 'manual'
+		        WHERE ili.concept_id = ANY(SELECT id FROM concepts WHERE name = ANY($1))
+		          AND source = 'manual'
 		          AND approved
 		    ) ili ON ili.concept_id = c.id
 		    JOIN ili_map_wn m
@@ -311,27 +347,49 @@ func (r *Repo) queryILIRelations(ctx context.Context, syn Synset) ([]ILIRelation
 		    JOIN wn_data d
 		        ON d.id = m.wn
 		        AND d.version = m.version
-		WHERE c.name = $1
-		  AND $2 LIKE '%' || substring(ili.wn_id, '.$') || '%'`
+		WHERE c.name = ANY($1)
+		  AND right(ili.wn_id, 1) = ANY($2)`
 
-	pos := iliPOS(syn.PartOfSpeech)
-	rows, err := r.pool.Query(ctx, q, strings.ToUpper(syn.Name), pos)
+	rows, err := r.pool.Query(ctx, q, names, posChars)
 	if err != nil {
-		return nil, fmt.Errorf("queryILIRelations: %w", err)
+		return nil, fmt.Errorf("buildILIBatch: %w", err)
 	}
 	defer rows.Close()
 
-	var result []ILIRelation
+	// Intermediate: group by (conceptName, posChar) so we can map back to synset IDs.
+	type namePos struct{ name, posChar string }
+	byNamePos := make(map[namePos][]ILIRelation)
 	for rows.Next() {
-		var rel ILIRelation
-		var lemmaJSON string
-		if err := rows.Scan(&rel.ILI, &rel.ID, &rel.Name, &rel.Definition, &lemmaJSON); err != nil {
+		var (
+			conceptName string
+			posChar     string
+			rel         ILIRelation
+			lemmaJSON   string
+		)
+		if err := rows.Scan(&conceptName, &posChar, &rel.ILI, &rel.ID, &rel.Name, &rel.Definition, &lemmaJSON); err != nil {
 			return nil, err
 		}
 		_ = json.Unmarshal([]byte(lemmaJSON), &rel.LemmaNames)
-		result = append(result, rel)
+		byNamePos[namePos{conceptName, posChar}] = append(byNamePos[namePos{conceptName, posChar}], rel)
 	}
-	return result, rows.Err()
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+
+	// Map results back to synset_id for O(1) lookup in the caller.
+	result := make(map[string][]ILIRelation, len(synsets))
+	for synID, syn := range synsets {
+		pos := iliPOS(syn.PartOfSpeech)
+		name := strings.ToUpper(syn.Name)
+		var merged []ILIRelation
+		for _, ch := range pos {
+			merged = append(merged, byNamePos[namePos{name, string(ch)}]...)
+		}
+		if len(merged) > 0 {
+			result[synID] = merged
+		}
+	}
+	return result, nil
 }
 
 func iliPOS(partOfSpeech string) string {
@@ -353,7 +411,7 @@ func scanSenses(rows pgx.Rows) ([]Sense, error) {
 	return result, rows.Err()
 }
 
-func groupSenseRelations(senseID string, rels map[string][]senseRel, synsets map[string]Synset) []SenseRelGroup {
+func groupSenseRelations(senseID string, rels map[string][]senseRel) []SenseRelGroup {
 	rawRels := rels[senseID]
 	grouped := make(map[string][]Sense)
 	for _, rel := range rawRels {

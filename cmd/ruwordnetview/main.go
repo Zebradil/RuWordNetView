@@ -27,7 +27,14 @@ func main() {
 		Password: mustEnv("POSTGRES_PASSWORD"),
 	}
 
-	pool, err := db.NewPool(ctx, cfg)
+	debug := os.Getenv("APP_DEBUG") != ""
+
+	var dbLogger *slog.Logger
+	if debug {
+		dbLogger = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{Level: slog.LevelDebug}))
+	}
+
+	pool, err := db.NewPool(ctx, cfg, dbLogger)
 	if err != nil {
 		logger.Error("connect to database", "error", err)
 		os.Exit(1)
@@ -54,7 +61,6 @@ func main() {
 		localeTexts = map[string]string{}
 	}
 
-	debug := os.Getenv("APP_DEBUG") != ""
 	addr := envOrDefault("LISTEN_ADDR", ":8000")
 
 	a := app.New(pool, renderer, logger, debug, localeTexts)
