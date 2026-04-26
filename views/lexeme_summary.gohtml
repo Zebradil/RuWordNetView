@@ -1,0 +1,116 @@
+{{define "content"}}
+<div class="lexeme-page">
+    {{$lv := .LexemeView}}
+    {{if $lv}}
+    {{$senses := $lv.Senses}}
+    {{if $senses}}
+    <div class="lexeme">
+        {{$first := index $senses 0}}
+        <h1 class="lexeme-title">
+            {{upper .SearchString}}
+            <span>{{trans $.Locale (printf "pos_%s" $first.Synset.PartOfSpeech)}}</span>
+        </h1>
+        {{if gt (len $senses) 1}}
+        <div class="alternative-meanings">
+            <div>Найдено несколько значений:</div>
+            <div>
+                {{range $i, $sd := $senses}}
+                <a href="#meaning-{{add $i 1}}">
+                    {{capitalize $sd.Sense.Name}}
+                    {{if $sd.Sense.Meaning}} {{$sd.Sense.Meaning}}{{end}}
+                    ({{lower $sd.Synset.Name}})
+                </a>
+                {{end}}
+            </div>
+        </div>
+        {{end}}
+        <div class="senses">
+            {{range $sd := $senses}}
+            <div class="sense">
+                <h2 class="sense-title" id="meaning-{{$sd.Sense.Meaning}}">
+                    {{capitalize $sd.Sense.Name}}
+                    {{if $sd.Sense.Meaning}} {{$sd.Sense.Meaning}}{{end}}
+                    <span>{{lower $sd.Synset.Name}}</span>
+                </h2>
+
+                <div class="synset">
+                    <h3 class="synset-title">{{capitalize (trans $.Locale "synset")}}</h3>
+                    <div class="synonyms">
+                        {{template "senseList" (dict
+                            "Locale"  $.Locale
+                            "Senses"  $sd.SynsetSenses
+                            "Current" $sd.Sense
+                            "Tail"    (synsetTail $.Locale $sd.Synset.Name))}}
+                    </div>
+
+                    {{if $sd.SenseRelations}}
+                    <div class="sense-relations relations">
+                        {{range $sd.SenseRelations}}
+                        <div class="relation">
+                            <h3 class="relation-title">{{trans $.Locale .Name}}</h3>
+                            <div class="relations-subjects">
+                                {{template "senseList" (dict
+                                    "Locale"  $.Locale
+                                    "Senses"  .Senses
+                                    "Current" $sd.Sense
+                                    "Tail"    "")}}
+                            </div>
+                        </div>
+                        {{end}}
+                    </div>
+                    {{end}}
+
+                    <div class="synset-relations relations">
+                        {{if $sd.ILIRelations}}
+                        <div class="relation">
+                            <h4 class="relations-title">{{trans $.Locale "ili_relation"}}</h4>
+                            <div class="relations-subjects">
+                                {{range $sd.ILIRelations}}
+                                <div class="synset">
+                                    <div class="sense-list">
+                                        <div class="sense">
+                                            <a target="_blank" rel="noopener noreferrer"
+                                               href="http://wordnet-rdf.princeton.edu/ili/{{.ILI}}">
+                                                {{.ILI}} {{.Name}} ({{join .LemmaNames ", "}})
+                                            </a>
+                                        </div>
+                                        <div class="tail">
+                                            [{{trans $.Locale "definition"}}: {{.Definition}}]
+                                        </div>
+                                    </div>
+                                </div>
+                                {{end}}
+                            </div>
+                        </div>
+                        {{end}}
+
+                        {{range $sd.SynsetRelations}}
+                        <div class="relation">
+                            <h4 class="relations-title">{{trans $.Locale .Name}}</h4>
+                            <div class="relations-subjects">
+                                {{range .Targets}}
+                                <div class="synset">
+                                    {{template "senseList" (dict
+                                        "Locale"  $.Locale
+                                        "Senses"  .Senses
+                                        "Current" $sd.Sense
+                                        "Tail"    (synsetTail $.Locale .Synset.Name))}}
+                                </div>
+                                {{end}}
+                            </div>
+                        </div>
+                        {{end}}
+                    </div>
+                </div>
+            </div>
+            {{end}}
+        </div>
+    </div>
+    {{else}}
+    <h4>{{transp $.Locale "word_not_found" (dict "%search_query%" .SearchString)}}</h4>
+    {{end}}
+    {{else}}
+    <h4>{{transp $.Locale "word_not_found" (dict "%search_query%" .SearchString)}}</h4>
+    {{end}}
+</div>
+{{end}}

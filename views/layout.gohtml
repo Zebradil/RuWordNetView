@@ -1,0 +1,73 @@
+{{define "layout"}}<!doctype html>
+<html lang="{{.Locale}}">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width">
+    <meta name="theme-color" content="#ffffff">
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+    <link rel="icon" type="image/png" href="/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="/favicon-16x16.png" sizes="16x16">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="mask-icon" href="/safari-pinned-tab.svg" color="#5bbad5">
+    <title>{{block "title" .}}RuWordNet{{end}}</title>
+    <link rel="stylesheet" href="/static/css/normalize.css?1">
+    <link rel="stylesheet" href="/static/css/layout.min.css?5">
+</head>
+<body>
+
+<div id="container">
+    <div id="header">
+        <div id="logo">
+            <a href="/">{{trans .Locale "navbar_brand"}}</a>
+        </div>
+        <div id="header-required-part">
+            <form id="search-form"
+                  role="search"
+                  action="{{path .Locale "search" (dict)}}"
+                  onsubmit="return searchFormSubmit(this);">
+                <input type="text"
+                       placeholder="{{capitalize (trans .Locale "search_placeholder")}}"
+                       name="searchString"
+                       value="{{.SearchString}}"
+                       id="form-search-field">
+                <span> <button type="submit">{{capitalize (trans .Locale "search")}}</button> </span>
+            </form>
+            <script>
+                function searchFormSubmit(form) {
+                    var searchField = document.getElementById('form-search-field');
+                    if (searchField.value) {
+                        location.href = form.action + '/' + searchField.value;
+                    } else {
+                        searchField.focus();
+                    }
+                    return false;
+                }
+            </script>
+            <div id="flag-box">
+                {{if eq .Locale "ru"}}
+                    <a href="{{path "en" .RouteName .RouteParams}}" title="English version">
+                        <span class="flag">&#x1F1EC;&#x1F1E7;</span>
+                    </a>
+                {{else}}
+                    <a href="{{path "ru" .RouteName .RouteParams}}" title="Версия на Русском">
+                        <span class="flag">&#x1F1F7;&#x1F1FA;</span>
+                    </a>
+                {{end}}
+            </div>
+        </div>
+    </div>
+
+    <div id="content">
+        {{block "content" .}}{{end}}
+    </div>
+
+    <footer>
+        <p>This website is designed and developed by <a href="https://github.com/Zebradil">German Lashevich</a> 2017</p>
+        <p>Feel free to tell me how to improve this project via an issue at <a
+                    href="https://github.com/Zebradil/RuWordNetView">Github project</a></p>
+    </footer>
+</div>
+
+</body>
+</html>
+{{end}}

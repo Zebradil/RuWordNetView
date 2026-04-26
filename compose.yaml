@@ -15,8 +15,6 @@ services:
     image: ruwordnetview:prod
     logging: *default-logging
     restart: unless-stopped
-    volumes:
-      - shared_web:/var/www/html/web:rw
 
   database:
     environment:
@@ -43,13 +41,10 @@ services:
       - 443:443
     restart: unless-stopped
     volumes:
-      # Volume for nginx cache
       - nginx_cache:/var/cache/nginx:rw
       - nginx_secrets:/etc/letsencrypt
-      - shared_web:/var/www/html/web:ro
 
 volumes:
   db_data:
   nginx_cache:
   nginx_secrets:
-  shared_web:

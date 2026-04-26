@@ -4,19 +4,14 @@ services:
       database-local:
         condition: service_healthy
     environment:
-      DEV_GID: 1000
-      DEV_UID: 1000
       POSTGRES_DB: ${POSTGRES_DB:?}
       POSTGRES_HOST: database-local
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
       POSTGRES_PORT: 5432
       POSTGRES_USER: ${POSTGRES_USER:?}
-    image: ruwordnetview:dev
+    image: ruwordnetview:prod
     ports:
       - '127.0.0.1:8000:8000'
-    volumes:
-      - .:/opt/app
-      - /opt/app/vendor
 
   database-local:
     environment:
@@ -28,7 +23,7 @@ services:
       retries: 10
       test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
       timeout: 5s
-    image: postgres:15.4
+    image: postgres:15.17
     ports:
       - '127.0.0.1:55432:5432'
     volumes:
