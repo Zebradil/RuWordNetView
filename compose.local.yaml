@@ -23,7 +23,7 @@ services:
       retries: 10
       test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
       timeout: 5s
-    image: postgres:15.17@sha256:2c8967afc75c041bda751b618e2111d9e32147f0797284ed192ec48b2a9ea0b7
+    image: postgres:15.18@sha256:67dc02dae6e27fa8b4333df9bfdf15265b33ce04186cd7e65c0b8fe67ee37b97
     ports:
       - '127.0.0.1:55432:5432'
     volumes:
