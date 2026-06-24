@@ -21,7 +21,7 @@ services:
       POSTGRES_DB: ${POSTGRES_DB:?}
       POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
       POSTGRES_USER: ${POSTGRES_USER:?}
-    image: postgres:15.18@sha256:c687464d7fa61dbfe1282708d9a9c54ce1ec7000bcc517b0aa382af17464a16a
+    image: postgres:18.4@sha256:1a5b3e745bbd82d6deb146505e504da3c2f248cac15e431951b148fbe4f8613a
     logging: *default-logging
     restart: unless-stopped
     volumes:
