@@ -43,3 +43,9 @@ jobs:
 
       - name: Build prod image
         run: docker build -t ruwordnetview:prod -f docker/prod/Dockerfile .
+
+      # The nginx image has no other check, so its base image bumps would pass on nothing.
+      - name: Build nginx image
+        run: |
+          cp docker/nginx/cloudflare.ini.dist docker/nginx/cloudflare.ini
+          docker build -t ruwordnetview:nginx -f docker/nginx/Dockerfile .
