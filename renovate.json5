@@ -4,6 +4,9 @@
     "config:best-practices",
     "helpers:pinGitHubActionDigestsToSemver",
   ],
+  // Machine-readable update list for pr-autopilot (ADR 0007). prHeader, not prBodyNotes: notes are
+  // rendered per upgrade, so the upgrades loop there sees an empty list.
+  prHeader: "<!-- pr-autopilot:upgrades [{{#each upgrades}}{\"depName\":\"{{{depName}}}\",\"updateType\":\"{{{updateType}}}\",\"currentValue\":\"{{{currentValue}}}\",\"newValue\":\"{{{newValue}}}\",\"manager\":\"{{{manager}}}\"}{{#unless @last}},{{/unless}}{{/each}}] -->",
   postUpdateOptions: [
     "gomodTidy",
     "goModUpdateImportPaths",
