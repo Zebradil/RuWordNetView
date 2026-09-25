@@ -27,7 +27,10 @@ services:
     ports:
       - '127.0.0.1:55432:5432'
     volumes:
-      - db_data_local:/var/lib/postgresql/data:rw
+      # Postgres 18+ images keep data in a major-version subdirectory (/var/lib/postgresql/18/docker) and
+      # refuse to start with a mount at the old .../data path. A new volume per major version leaves the
+      # previous one intact as a rollback until a dump of it has been restored here.
+      - pg18_data_local:/var/lib/postgresql:rw
 
 volumes:
-  db_data_local:
+  pg18_data_local:
