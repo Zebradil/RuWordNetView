@@ -29,6 +29,9 @@ jobs:
             exit 1
           fi
 
+      - name: go test
+        run: go test -mod=mod ./...
+
   build:
     name: Docker build
     runs-on: ubuntu-latest
