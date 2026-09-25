@@ -25,7 +25,10 @@ services:
     logging: *default-logging
     restart: unless-stopped
     volumes:
-      - db_data:/var/lib/postgresql/data:rw
+      # Postgres 18+ images keep data in a major-version subdirectory (/var/lib/postgresql/18/docker) and
+      # refuse to start with a mount at the old .../data path. A new volume per major version leaves the
+      # previous one intact as a rollback until a dump of it has been restored here.
+      - pg18_data:/var/lib/postgresql:rw
 
   proxy:
     environment:
@@ -45,6 +48,6 @@ services:
       - nginx_secrets:/etc/letsencrypt
 
 volumes:
-  db_data:
+  pg18_data:
   nginx_cache:
   nginx_secrets:

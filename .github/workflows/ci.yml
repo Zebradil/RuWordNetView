@@ -29,6 +29,9 @@ jobs:
             exit 1
           fi
 
+      - name: go test
+        run: go test -mod=mod ./...
+
   build:
     name: Docker build
     runs-on: ubuntu-latest
@@ -40,3 +43,27 @@ jobs:
 
       - name: Build prod image
         run: docker build -t ruwordnetview:prod -f docker/prod/Dockerfile .
+
+      # The nginx image has no other check, so its base image bumps would pass on nothing.
+      - name: Build nginx image
+        run: |
+          cp docker/nginx/cloudflare.ini.dist docker/nginx/cloudflare.ini
+          docker build -t ruwordnetview:nginx -f docker/nginx/Dockerfile .
+
+      # Postgres image bumps land only in compose.yaml; this proves the pinned image pulls and
+      # accepts TCP connections. The temporary server of first-run initialisation listens only on
+      # the Unix socket, so probing 127.0.0.1 waits for the real one.
+      - name: Start Postgres from compose.yaml
+        env:
+          POSTGRES_DB: ci
+          POSTGRES_USER: ci
+          POSTGRES_PASSWORD: ci
+          CERTBOT_EMAIL: ci@example.com
+        run: |
+          docker compose -f compose.yaml up -d database
+          for _ in $(seq 60); do
+            docker compose -f compose.yaml exec -T database pg_isready -h 127.0.0.1 -U ci && exit 0
+            sleep 1
+          done
+          docker compose -f compose.yaml logs database
+          exit 1

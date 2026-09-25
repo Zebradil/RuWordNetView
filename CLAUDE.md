@@ -17,8 +17,8 @@ All common workflows are driven through the Makefile. Run `make help` for the au
 - `make lint` — run `go vet` and `gofmt` check.
 - `make css` — compile `web/static/css/layout.scss` → `layout.min.css` via `sassc` (host tool).
 - `make deploy` — rsync the tree to the `ruwordnet` remote.
-- Production stack: `docker compose up` uses `compose.yaml` (nginx proxy + app + postgres:15.17). Requires `.env` populated from `.env.dist`. The `app` service reads DB from `POSTGRES_*` env vars.
-- CI: GitHub Actions (`.github/workflows/ci.yml`) runs `go vet`, `gofmt` check, and Docker build on every push/PR.
+- Production stack: `docker compose up` uses `compose.yaml` (nginx proxy + app + postgres:18, data in the `pg18_data` volume). Requires `.env` populated from `.env.dist`. The `app` service reads DB from `POSTGRES_*` env vars.
+- CI: GitHub Actions (`.github/workflows/ci.yml`) runs `go vet`, `gofmt` check, `go test`, builds both Docker images and starts the Postgres pinned in `compose.yaml` on every push/PR.
 
 First-time local setup:
 1. Export `POSTGRES_HOST`, `POSTGRES_DB`, `POSTGRES_USER`, `POSTGRES_PASSWORD` (`POSTGRES_PORT` defaults to `5432`).
