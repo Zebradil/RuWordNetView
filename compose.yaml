@@ -36,7 +36,7 @@ services:
       - CERTBOT_AUTHENTICATOR=dns-cloudflare
       - STAGING=0
     # Has to be built beforehand.
-    # See https://github.com/Zebradil/RuWordNetView/blob/master/Makefile
+    # See https://github.com/Zebradil/RuWordNetView/blob/main/Makefile
     image: ruwordnetview:nginx
     logging: *default-logging
     ports:

@@ -4,7 +4,7 @@ enabled = true
 # concluded about the repository, and why the policy below looks the way it does.
 [risk]
 # No release tooling and no tags. Deployment is manual (`make deploy` rsync plus `docker compose up`
-# on the server, confirmed by the operator), so a merge to master reaches production only when a
+# on the server, confirmed by the operator), so a merge to main reaches production only when a
 # human deploys it.
 release_mode      = "none"
 deploys_from_main = false
